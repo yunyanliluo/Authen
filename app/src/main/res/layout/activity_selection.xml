@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="#eee"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/title"></include>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:padding="15dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/btn_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_select"
+            android:layout_marginBottom="20dp"
+            android:text="用户登录" />
+
+        <Button
+            android:id="@+id/btn_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_select"
+            android:layout_marginBottom="10dp"
+            android:text="游客模式" />
+
+        <Button
+            android:id="@+id/btn_2"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_select"
+            android:layout_marginBottom="10dp"
+            android:text="关于真刻" />
+    </LinearLayout>
+
+</RelativeLayout>

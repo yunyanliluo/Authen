@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eee"
+    android:orientation="vertical"
+    tools:context="com.sid.soundrecorderutils.view.MainActivity">
+
+    <include
+        android:id="@+id/lv_title"
+        layout="@layout/title"></include>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/lv_title"
+        android:gravity="center"
+        android:orientation="vertical">
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:gravity="center"-->
+<!--            android:id="@+id/ll_menus"-->
+<!--            android:layout_centerInParent="true"-->
+<!--            android:orientation="vertical"-->
+<!--            >-->
+
+<!--            <Button-->
+<!--                android:id="@+id/btn_press"-->
+<!--                android:layout_margin="5dp"-->
+<!--                android:layout_width="180dp"-->
+<!--                android:layout_height="60dp"-->
+<!--                android:layout_gravity="center_vertical"-->
+<!--                android:paddingTop="10dp"-->
+<!--                android:paddingBottom="10dp"-->
+<!--                android:background="@drawable/button_select"-->
+<!--                android:text="录制音频" />-->
+
+
+<!--            <Button-->
+<!--                android:id="@+id/btn_take_photo"-->
+<!--                android:layout_margin="5dp"-->
+<!--                android:layout_width="180dp"-->
+<!--                android:layout_height="60dp"-->
+<!--                android:layout_gravity="center_vertical"-->
+<!--                android:paddingTop="10dp"-->
+<!--                android:paddingBottom="10dp"-->
+<!--                android:background="@drawable/button_select"-->
+<!--                android:text="拍摄照片" />-->
+
+<!--            <RelativeLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                >-->
+
+<!--                <Button-->
+<!--                    android:id="@+id/btn_upload"-->
+<!--                    android:layout_margin="5dp"-->
+<!--                    android:layout_width="180dp"-->
+<!--                    android:layout_height="60dp"-->
+<!--                    android:layout_gravity="center_vertical"-->
+<!--                    android:paddingTop="10dp"-->
+<!--                    android:paddingBottom="10dp"-->
+<!--                    android:background="@drawable/button_select"-->
+<!--                    android:text="本地同步" />-->
+
+<!--                <GridLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:columnCount="2"-->
+
+<!--            </RelativeLayout>-->
+
+<!--        </LinearLayout>-->
+
+
+
+        <GridLayout
+            android:id="@+id/grid_menus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerInParent="true"
+            android:layout_gravity="fill"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:columnCount="2"
+            android:rowCount="3"
+            >
+            <Button
+                android:id="@+id/btn_press"
+                android:layout_margin="5dp"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:background="@drawable/button_select"
+                android:text="录音" />
+
+
+            <Button
+                android:id="@+id/btn_take_photo"
+                android:layout_margin="5dp"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:background="@drawable/button_select"
+                android:text="拍照" />
+
+            <Button
+                android:id="@+id/btn_review_audio"
+                android:layout_margin="5dp"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:background="@drawable/button_select"
+                android:text="本地录音" />
+
+            <Button
+                android:id="@+id/btn_review_photo"
+                android:layout_margin="5dp"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:background="@drawable/button_select"
+                android:text="本地照片" />
+
+            <Button
+                android:id="@+id/btn_upload"
+                android:layout_margin="5dp"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:background="@drawable/button_select"
+                android:visibility="invisible"
+                android:text="上传" />
+
+            <Button
+                android:id="@+id/btn_setting"
+                android:layout_margin="5dp"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:background="@drawable/button_select"
+                android:visibility="invisible"
+                android:text="设置" />
+
+            <!--<Button
+                android:id="@+id/btn_play"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_select"
+                android:text="按下播放" />-->
+
+        </GridLayout>
+
+
+
+    </RelativeLayout>
+
+</RelativeLayout>
