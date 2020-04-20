@@ -79,10 +79,6 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
         holder.mTvDate.setText(diary.substring(0,4) + "年" + diary.substring(5,7) + "月" + diary.substring(8,10) + "日 "
                                 +diary.substring(11,13) + "时" + diary.substring(14,16) + "分" + diary.substring(17,19) + "秒");
         Log.d(TAG, "onBindViewHolder: " + holder.mTvDate.getText());
-//        holder.mTvTitle.setText(diary.substring(0,19));
-//        Log.d(TAG, "onBindViewHolder: " + holder.mTvTitle.getText());
-//        holder.mIvUpload.setVisibility(View.INVISIBLE);
-//        holder.mIvRemove.setVisibility(View.INVISIBLE);
         String discription = new String();
         Log.d(TAG, "onBindViewHolder: " + diary.length());
         Log.d(TAG, "onBindViewHolder: " + diary.substring(24));
@@ -101,15 +97,6 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
                 final TextView tv = (TextView)v;
                 final String content = tv.getText().toString();
                 final EditTextUtil ETView = getEditTextUtil(tv);
-//                LayoutInflater factory = LayoutInflater.from(context);
-//                View textEntryView = factory.inflate(R.layout.layout_editdialog, null);
-//                final EditTextUtil et_dialog = (EditTextUtil) textEntryView.findViewById(R.id.et_dialog);
-//                if(content=="") {
-//                    et_dialog.setHint("在这里写点儿什么……");
-//                }
-//                else {
-//                    et_dialog.setText(content);
-//                }
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                 alertDialogBuilder.setView(ETView);
                 alertDialogBuilder.setTitle("编辑中……");
@@ -356,6 +343,11 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
         return imgView;
     }
 
+    /**
+     * 将要修改某一条记录的TextView时，返回一个可编辑的EditTextUtil组件
+     * @param tv 想要修改的某一条记录的TextView组件
+     * @return
+     */
     private EditTextUtil getEditTextUtil(TextView tv) {
         String content = tv.getText().toString();
         EditTextUtil etuView = new EditTextUtil(context);
@@ -371,22 +363,12 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
         return etuView;
     }
 
-    private EditTextUtil getEditTextUtil(Integer position) {
-        EditTextUtil etuView = new EditTextUtil(context);
-        etuView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        String diary = stringList.get(position);
-        Log.d(TAG, "getEditTextUtil: " + diary);
-        if(diary==null || diary.length()<25) {
-            etuView.setHint("在这里写点儿什么……");
-        }
-        else {
-            String content = diary.substring(24);
-            etuView.setText(content);
-        }
 
-        return etuView;
-    }
-
+    /**
+     * 修改某一条记录的文字描述，更新到本地数据库
+     * @param position 读取本地存储的所有音频/视频文件时，待上传文件所在的编号.stringList.get(position).substring(0,23)是文件名
+     * @param content_update 新的文字描述
+     */
     private void updateContent(Integer position, String content_update) {
         Log.d(TAG, "updateContent: new discription: " + content_update);
         String date = stringList.get(position).substring(0,10);
@@ -403,6 +385,10 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
         diaryDataBaseManager.update(diary);
     }
 
+    /**
+     * 播放录音文件
+     * @param position 读取本地存储的所有音频文件时，待上传文件所在的编号.stringList.get(position).substring(0,23)是文件名
+     */
     private void playRecord(Integer position) {
         String filename = stringList.get(position).substring(0,23);
         File mp3file = FileUtil.getFile(AudioRecoderUtils.MP3_PATH + filename);
@@ -414,6 +400,12 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
         }
     }
 
+    /**
+     * 获取录音时长
+     * @param filename 录音文件文件名
+     * @return
+     * @throws IOException
+     */
     private String getDuration(String filename) throws IOException {
         Integer duration = recordPlayerManager.getRecordDuration(FileUtil.getFile(AudioRecoderUtils.MP3_PATH + filename));
         String str_ss = new String();
@@ -436,6 +428,10 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
         return str_mm + ":" + str_ss;
     }
 
+    /**
+     * 上传文件
+     * @param position 读取本地存储的所有音频/视频文件时，待上传文件所在的编号.stringList.get(position).substring(0,23)是文件名
+     */
     private void uploadFile(Integer position) {
         String filename = stringList.get(position).substring(0,23);
         if(isImageMode) {
@@ -446,6 +442,13 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
         }
     }
 
+    /**
+     * 上传文件的ftp操作
+     * @param filePath 完整路径
+     * @param fileName 文件名
+     * @param activity
+     * @param context
+     */
     private void uploadFromDiary(final String filePath, final String fileName, final Activity activity, final Context context) {
         // 网络操作，但开一个线程进行处理
         new Thread(new Runnable() {
@@ -469,6 +472,10 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
         }).start();
     }
 
+    /**
+     * 删除某一条记录及相关文件
+     * @param position 读取本地存储的所有音频/视频文件时，待上传文件所在的编号.stringList.get(position).substring(0,23)是文件名
+     */
     private void deleteFile(Integer position) {
         String filename = stringList.get(position).substring(0,23);
         if(isImageMode) {
