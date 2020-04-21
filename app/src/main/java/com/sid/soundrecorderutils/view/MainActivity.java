@@ -29,9 +29,8 @@ import java.util.Map;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     private String TAG = "MainActivity";
-    private Button mBtnPress, /*mBtnPlay,*/
-            mBtnTakePhoto, mBtnUpload, mBtnReviewAudio, mBtnReviewPhoto, mBtnSetting;
-    private ImageView mIvSetting, mIvLock;
+    private Button mBtnRecord, mBtnTakePhoto, mBtnUpload;
+    private ImageView mBtnSetting, mBtnLock, mBtnPosition, mBtnCall;
     private String imgPath = "";            //图片文件路径
     private String imgName = "";            //图片文件名
     private String mp3Path = "";            //录音文件路径
@@ -49,7 +48,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         initView();
-        mBtnPress.setOnClickListener(new View.OnClickListener() {
+        mBtnRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                     onMainInitRecord();
@@ -86,42 +85,31 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
      * 初始化UI
      */
     private void initView() {
-        mBtnPress = (Button) findViewById(R.id.btn_press);
+        mBtnRecord = (Button) findViewById(R.id.btn_press);
         mBtnTakePhoto = (Button) findViewById(R.id.btn_take_photo);
         mBtnUpload = (Button) findViewById(R.id.btn_upload);
         mBtnUpload.setOnClickListener(this);
-        mBtnSetting = (Button) findViewById(R.id.btn_setting);
-        mBtnReviewAudio = (Button) findViewById(R.id.btn_review_audio);
-        mBtnReviewAudio.setOnClickListener(this);
-        mBtnReviewPhoto = (Button) findViewById(R.id.btn_review_photo);
-        mBtnReviewPhoto.setOnClickListener(this);
-        mBtnSetting = (Button) findViewById(R.id.btn_setting);
+        mBtnSetting = (ImageView) findViewById(R.id.iv_setting);
         mBtnSetting.setOnClickListener(this);
+        mBtnLock = (ImageView) findViewById(R.id.iv_lock);
+        mBtnLock.setOnClickListener(this);
+        mBtnPosition = (ImageView) findViewById(R.id.iv_position);
+        mBtnPosition.setOnClickListener(this);
+        mBtnCall = (ImageView) findViewById(R.id.iv_call);
+        mBtnCall.setOnClickListener(this);
         mTitle = (TextView) findViewById(R.id.title);
         mTitle.setText("真刻");
-//        mIvSetting = (ImageView) findViewById(R.id.iv_setting);
-//        mIvLock = (ImageView) findViewById(R.id.iv_lock);
 
 
-        Drawable drawable_btn_press=getResources().getDrawable(R.drawable.record_tran);
-        drawable_btn_press.setBounds(0,0,400,300);//第一0是距左边距离，第二0是距上边距离，第三、第四分别是长宽
-        mBtnPress.setCompoundDrawables(null,drawable_btn_press,null,null);//只放上边
-        Drawable drawable_btn_photo=getResources().getDrawable(R.drawable.camera2_tran);
-        drawable_btn_photo.setBounds(0,0,400,300);//第一0是距左边距离，第二0是距上边距离，30、35分别是长宽
-        mBtnTakePhoto.setCompoundDrawables(null,drawable_btn_photo,null,null);//只放左边
-        Drawable drawable_btn_review_audio=getResources().getDrawable(R.drawable.recorder3_tran);
-        drawable_btn_review_audio.setBounds(0,0,400,300);//第一0是距左边距离，第二0是距上边距离，30、35分别是长宽
-        mBtnReviewAudio.setCompoundDrawables(null,drawable_btn_review_audio,null,null);//只放左边
-        Drawable drawable_btn_review_photo=getResources().getDrawable(R.drawable.gallery2_tran);
-        drawable_btn_review_photo.setBounds(0,0,400,300);//第一0是距左边距离，第二0是距上边距离，30、35分别是长宽
-        mBtnReviewPhoto.setCompoundDrawables(null,drawable_btn_review_photo,null,null);//只放左边
-        Drawable drawable_btn_upload=getResources().getDrawable(R.drawable.file_tran);
-        drawable_btn_upload.setBounds(0,0,400,300);//第一0是距左边距离，第二0是距上边距离，30、35分别是长宽
-        mBtnUpload.setCompoundDrawables(null,drawable_btn_upload,null,null);//只放左边
-        Drawable drawable_btn_sett=getResources().getDrawable(R.drawable.setting7_tran);
-        drawable_btn_sett.setBounds(0,0,400,300);//第一0是距左边距离，第二0是距上边距离，30、35分别是长宽
-        mBtnSetting.setCompoundDrawables(null,drawable_btn_sett,null,null);//只放左边
-
+        Drawable drawable_btn_press=getResources().getDrawable(R.drawable.luyin_4);
+        drawable_btn_press.setBounds(0,0,200,200);//第一0是距左边距离，第二0是距上边距离，第三、第四分别是长宽
+        mBtnRecord.setCompoundDrawables(drawable_btn_press,null,null,null);//只放上边
+        Drawable drawable_btn_photo=getResources().getDrawable(R.drawable.xiangji);
+        drawable_btn_photo.setBounds(0,0,200,200);//第一0是距左边距离，第二0是距上边距离，30、35分别是长宽
+        mBtnTakePhoto.setCompoundDrawables(drawable_btn_photo,null,null,null);//只放左边
+        Drawable drawable_btn_upload=getResources().getDrawable(R.drawable.xiazai);
+        drawable_btn_upload.setBounds(0,0,200,200);//第一0是距左边距离，第二0是距上边距离，30、35分别是长宽
+        mBtnUpload.setCompoundDrawables(drawable_btn_upload,null,null,null);//只放左边
     }
 
     @Override
@@ -143,115 +131,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_upload:
-
-                //弹出单选对话框选择
-                final String[] arr = {"图片", "音频"};//选择的选项
-                final int[] size = {-1};
-                new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("选择上传文件类型")
-                        .setSingleChoiceItems(arr, -1, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int witch) {
-                                size[0] = witch;
-                                LogUtils.e("TAG", "当前选择的类型:" + size[0]);
-                            }
-                        }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        final ArrayList<Integer> integer = new ArrayList<Integer>();
-                        Map<String, String> map = new HashMap<>();
-                        String[] arrs = null;
-                        if (size[0] == 0) {
-                            if(TakePhotoActivity.PATH_IMAGES==null) {
-                                showToast("没有图片");
-                            }
-                            else {
-                                map = FileUtil.getFileName(TakePhotoActivity.PATH_IMAGES);
-                                if(map.size()==0) {
-                                    showToast("没有图片");
-                                }
-                                else {
-                                    arrs = new String[map.values().size()];
-                                    arrs = map.values().toArray(arrs);
-                                    LogUtils.e("TAG", "image arrs:" + Arrays.toString(arrs));
-                                }
-                            }
-
-                        } else if (size[0] == 1) {
-                            if(AudioRecoderUtils.MP3_PATH==null) {
-                                showToast("没有音频");
-                            }
-                            else {
-                                map = FileUtil.getFileName(AudioRecoderUtils.MP3_PATH);
-                                if(map.size()==0) {
-                                    showToast("没有音频");
-                                }
-                                else {
-                                    arrs = new String[map.values().size()];
-                                    arrs = map.values().toArray(arrs);
-                                    LogUtils.e("TAG", "mp3 arrs:" + Arrays.toString(arrs));
-                                }
-                            }
-                        }
-                        if(map.size() != 0) {
-                            final Map<String, String> finalMap = map;
-                            new AlertDialog.Builder(MainActivity.this)
-                                    .setTitle("选择上传文件")
-                                    .setMultiChoiceItems(arrs,
-                                            new boolean[arrs.length],
-                                            new DialogInterface.OnMultiChoiceClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i, boolean b) {
-                                                    if (b) {
-                                                        integer.add(i);
-                                                    } else {
-                                                        integer.remove(i);
-                                                    }
-                                                }
-                                            })
-                                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            for (int teger : integer) {
-                                                if (finalMap.get(String.valueOf(teger)).endsWith(".mp3")) {
-                                                    upload(AudioRecoderUtils.MP3_PATH + finalMap.get(String.valueOf(teger)), finalMap.get(String.valueOf(teger)));
-                                                }
-                                                if (finalMap.get(String.valueOf(teger)).endsWith(".jpg")) {
-                                                    upload(TakePhotoActivity.PATH_IMAGES + finalMap.get(String.valueOf(teger)), finalMap.get(String.valueOf(teger)));
-                                                }
-                                            }
-                                        }
-                                    }).setNegativeButton("返回", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-
-                                        }
-                                    }).show();
-                        }
-                    }
-                }).setNegativeButton("返回", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
-                }).show();
-                break;
-
-            case R.id.btn_review_audio:
-                review(false);
-                break;
-
-            case R.id.btn_review_photo:
                 review(true);
                 break;
 
-//            case R.id.iv_setting:
-//                userSetting();
-//                break;
-//
-//            case R.id.iv_lock:
-//                userLock();
-//                break;
+            case R.id.iv_setting:
+                userSetting();
+                break;
+
+            case R.id.iv_lock:
+                userLock();
+                break;
+
+            case R.id.iv_position:
+                figurePosition();
+                break;
+
+            case R.id.iv_call:
+                helpCall();
+                break;
         }
     }
 
@@ -294,6 +191,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void userLock() {
         showToast("密码功能还未开启");
+//        Intent intent = new Intent(this, HistoryActivity.class);
+//        startActivity(intent);
+    }
+
+    private void figurePosition() {
+        showToast("定位功能还未开启");
+//        Intent intent = new Intent(this, HistoryActivity.class);
+//        startActivity(intent);
+    }
+
+    private void helpCall() {
+        showToast("求助电话功能还未开启");
 //        Intent intent = new Intent(this, HistoryActivity.class);
 //        startActivity(intent);
     }

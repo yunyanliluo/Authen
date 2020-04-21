@@ -2,6 +2,7 @@ package com.sid.soundrecorderutils.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +32,7 @@ import static android.content.ContentValues.TAG;
 public class ReviewActivity extends BaseActivity {
 
     private RecyclerView recyclerView;//声明RecyclerView
+    private ImageView mIvImage, mIvAudio;
     private DiaryRecycleAdapter adapterDiary;//声明适配器
     private Context context;
     private List<String> ImageList;
@@ -49,6 +51,7 @@ public class ReviewActivity extends BaseActivity {
         }
         setContentView(R.layout.activity_review);
         recyclerView = (RecyclerView) findViewById(R.id.lo_recyclerview);
+
         Bundle bundle = getIntent().getExtras();
         isImageMode = (boolean) bundle.getSerializable("isImageMode");
         AudioList = new ArrayList<>();
@@ -62,13 +65,36 @@ public class ReviewActivity extends BaseActivity {
                 finish();
             }
         });
+        mIvImage = (ImageView) findViewById(R.id.iv_image);
+        mIvImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isImageMode) return;
+                review(true);
+                finish();
+            }
+        });
+        mIvAudio = (ImageView) findViewById(R.id.iv_audio);
+        mIvAudio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isImageMode == false) return;
+                review(false);
+                finish();
+            }
+        });
+
         if(isImageMode) {
             mTvRvTitle.setText("所有照片");
+            mIvImage.setImageDrawable(getResources().getDrawable(R.drawable.tupian_blue));
+            mIvAudio.setImageDrawable(getResources().getDrawable(R.drawable.yinpin_4));
             showImage();
             adaptList(ImageList,isImageMode);
         }
         else {
             mTvRvTitle.setText("所有录音");
+            mIvImage.setImageDrawable(getResources().getDrawable(R.drawable.tupian));
+            mIvAudio.setImageDrawable(getResources().getDrawable(R.drawable.yinpin_blue));
             showAudio();
             adaptList(AudioList, isImageMode);
         }
@@ -142,6 +168,14 @@ public class ReviewActivity extends BaseActivity {
             Log.d("filename", ": " + arr);
             Log.d(TAG, "showImage: " + arr_dis);
         }
+    }
+
+    private void review(boolean isImageMode) {
+        Intent intent = new Intent(this, ReviewActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("isImageMode", isImageMode);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
 //    @Override

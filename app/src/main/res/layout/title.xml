@@ -2,22 +2,44 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="50dp">
+    android:layout_height="60dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:layout_gravity="center_vertical">
 
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/primaryColor"
-            android:paddingLeft="10dp"
+            android:background="#FFE4D4"
+            android:paddingLeft="70dp"
             android:gravity="center_vertical|left"
             android:text="标题"
-            android:textColor="#fff"
-            android:textSize="20dp"
+            android:textColor="@color/primary_text"
+            android:textSize="28dp"
             tools:ignore="InvalidId" />
-    </LinearLayout>
+
+        <ImageView
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:id="@+id/iv_setting"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/shezhi_1"
+            android:layout_centerInParent="true"
+            android:layout_alignParentLeft="true"
+            />
+
+        <ImageView
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:id="@+id/iv_lock"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/mima"
+            android:layout_centerInParent="true"
+            android:layout_alignParentRight="true"
+            />
+    </RelativeLayout>
 </LinearLayout>
