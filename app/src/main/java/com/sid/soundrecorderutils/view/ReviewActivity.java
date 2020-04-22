@@ -30,17 +30,16 @@ import java.util.Map;
 import static android.content.ContentValues.TAG;
 
 public class ReviewActivity extends BaseActivity {
+    private Context context;
 
     private RecyclerView recyclerView;//声明RecyclerView
-    private ImageView mIvImage, mIvAudio;
     private DiaryRecycleAdapter adapterDiary;//声明适配器
-    private Context context;
+    private TextView mTvRvTitle;
+    private ImageView mIvRvBack, mIvImage, mIvAudio;
+    private Boolean isImageMode = false; //true for Image, false for Audio
     private List<String> ImageList;
     private List<String> AudioList;
-    private Boolean isImageMode = false; //true for Image, false for Audio
     private static DiaryDataBaseManager diaryDataBaseManager;
-    private TextView mTvRvTitle;
-    private ImageView mIvRvBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +53,11 @@ public class ReviewActivity extends BaseActivity {
 
         Bundle bundle = getIntent().getExtras();
         isImageMode = (boolean) bundle.getSerializable("isImageMode");
+
         AudioList = new ArrayList<>();
         ImageList = new ArrayList<>();
 
+        //顶部标题和后退按钮
         mTvRvTitle = (TextView) findViewById(R.id.tv_rvtitle);
         mIvRvBack = (ImageView) findViewById(R.id.iv_rvback);
         mIvRvBack.setOnClickListener(new View.OnClickListener() {
@@ -65,6 +66,8 @@ public class ReviewActivity extends BaseActivity {
                 finish();
             }
         });
+
+        //底部菜单的image按钮
         mIvImage = (ImageView) findViewById(R.id.iv_image);
         mIvImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +77,8 @@ public class ReviewActivity extends BaseActivity {
                 finish();
             }
         });
+
+        //底部菜单的audio按钮
         mIvAudio = (ImageView) findViewById(R.id.iv_audio);
         mIvAudio.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,28 +103,41 @@ public class ReviewActivity extends BaseActivity {
             showAudio();
             adaptList(AudioList, isImageMode);
         }
-
-
     }
+
+
+    /**
+     * 设置布局管理器和适配器，显示页面
+     * @param list
+     * @param isImageMode
+     */
     private void adaptList(List<String> list, boolean isImageMode) {
-        adapterDiary = new DiaryRecycleAdapter(context, list, isImageMode);
-        LinearLayoutManager manager = new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false);
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(adapterDiary);
+        adapterDiary = new DiaryRecycleAdapter(context, list, isImageMode); //适配器
+        LinearLayoutManager manager = new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false); //布局管理器
+        recyclerView.setLayoutManager(manager); //设置布局管理器
+        recyclerView.setAdapter(adapterDiary); //设置适配器
     }
 
+    /**
+     * 查询本地音频文件，查询数据库discription，保存到AudioList
+     */
     private void showAudio() {
+        //查询本地保存的音频文件
         Map<String, String> map = new HashMap<>();
         map = FileUtil.getFileName(AudioRecoderUtils.MP3_PATH);
         String[] arrs = null;
         arrs = new String[map.values().size()];
         arrs = map.values().toArray(arrs);
         LogUtils.e("show", "mp3 arrs:" + Arrays.toString(arrs));
+
+        //从本地数据库查询discription
+        //根据date，time查询discription，arr_dis是arr + "_" + discription
         for (String arr : arrs) {
             String arr_dis = new String();
             Diary startQueryDiary;
             startQueryDiary = new Diary(arr.substring(0,10), arr.substring(11,19), 0);
             Diary diaryQuery = diaryDataBaseManager.queryDiary(startQueryDiary);
+
             if(diaryQuery != null)
                 Log.d(TAG, "showAudio: " + diaryQuery.toString());
             if(diaryQuery == null || diaryQuery.date == null) {
@@ -133,24 +151,33 @@ public class ReviewActivity extends BaseActivity {
             else {
                 arr_dis = arr + "_" + diaryQuery.discription;
             }
+
             AudioList.add(arr_dis);//\n\n");
             Log.d("filename", ": " + arr);
             Log.d(TAG, "showAudio: " + arr_dis);
         }
     }
 
+    /**
+     * 查询本地拍摄文件，查询数据库discription，保存到ImageList
+     */
     private void showImage() {
+        //查询本地保存的拍摄文件
         Map<String, String> map = new HashMap<>();
         map = FileUtil.getFileName(TakePhotoActivity.PATH_IMAGES);
         String[] arrs = null;
         arrs = new String[map.values().size()];
         arrs = map.values().toArray(arrs);
         LogUtils.e("show", "img arrs:" + Arrays.toString(arrs));
+
+        //从本地数据库查询discription
+        //根据date，time查询discription，arr_dis是arr + "_" + discription
         for (String arr : arrs) {
             String arr_dis = new String();
             Diary startQueryDiary;
             startQueryDiary = new Diary(arr.substring(0,10), arr.substring(11,19), 1);
             Diary diaryQuery = diaryDataBaseManager.queryDiary(startQueryDiary);
+
             if(diaryQuery != null)
                 Log.d(TAG, "showImage: " + diaryQuery.toString());
             if(diaryQuery == null || diaryQuery.date == null || diaryQuery.date == "null") {
@@ -164,6 +191,7 @@ public class ReviewActivity extends BaseActivity {
             else {
                 arr_dis = arr + "_" + diaryQuery.discription;
             }
+
             ImageList.add(arr_dis);//\n\n");
             Log.d("filename", ": " + arr);
             Log.d(TAG, "showImage: " + arr_dis);

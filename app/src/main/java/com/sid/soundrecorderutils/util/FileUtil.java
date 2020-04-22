@@ -32,6 +32,11 @@ public class FileUtil {
         return map;
     }
 
+    /**
+     * 根据文件路径返回文件
+     * @param fileAbsolutePath
+     * @return
+     */
     public static File getFile(final String fileAbsolutePath) {
         Log.d(TAG, "getFile: " + fileAbsolutePath);
         if(fileAbsolutePath == null) return null;

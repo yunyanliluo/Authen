@@ -39,32 +39,5 @@ public class BaseActivity extends Activity {
 
     public void showToast(String value) {
         Toast.makeText(this, value, Toast.LENGTH_SHORT).show();
-//        View toastView = getLayoutInflater().inflate(R.layout.layout_toast, null);
-//        Toast toast=new Toast(getApplicationContext());
-//        toast.setView(toastView);
-////        TextView tv=(TextView)toastView.findViewById(R.id.message);
-//        tv.setText(value);
-//        toast.show();
-
-
     }
-
-//    //记录用户首次点击返回键的时间
-//    private long firstTime = 0;
-//
-//    @Override
-//    public boolean onKeyUp(int keyCode, KeyEvent event) {
-//        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
-//            long secondTime = System.currentTimeMillis();
-//            if (secondTime - firstTime > 2000) {
-//                Toast.makeText(this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
-//                firstTime = secondTime;
-//                return true;
-//            } else {
-//                finish();
-//            }
-//        }
-//        return super.onKeyUp(keyCode, event);
-//    }
-
 }

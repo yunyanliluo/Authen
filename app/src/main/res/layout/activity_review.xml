@@ -50,6 +50,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
                 android:orientation="horizontal"
                 android:layout_gravity="center_vertical">
 
@@ -62,10 +64,10 @@
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:id="@+id/iv_image"
-                        android:src="@drawable/tupian"
+                        android:id="@+id/iv_audio"
+                        android:src="@drawable/yinpin_4"
                         android:layout_centerInParent="true"
-                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="true"
                         />
 
                 </LinearLayout>
@@ -80,10 +82,10 @@
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:id="@+id/iv_audio"
-                        android:src="@drawable/yinpin_4"
+                        android:id="@+id/iv_image"
+                        android:src="@drawable/tupian"
                         android:layout_centerInParent="true"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentLeft="true"
                         />
                 </LinearLayout>
 

@@ -48,55 +48,35 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         initView();
-        mBtnRecord.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                    onMainInitRecord();
-            }
-        });
-
-        mBtnTakePhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startTake();
-            }
-        });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (resultCode) {
-            case 222:
-                imgPath = data.getStringExtra("imgPath");
-                imgName = data.getStringExtra("imgName");
-                break;
-        }
-    }
 
-    /**
-     * 拍照
-     */
-    public void startTake() {
-        startActivityForResult(new Intent(MainActivity.this, TakePhotoActivity.class), 222);
-    }
 
     /**
      * 初始化UI
      */
     private void initView() {
-        mBtnRecord = (Button) findViewById(R.id.btn_press);
+        mBtnRecord = (Button) findViewById(R.id.btn_record);
+        mBtnRecord.setOnClickListener(this);
+
         mBtnTakePhoto = (Button) findViewById(R.id.btn_take_photo);
+        mBtnTakePhoto.setOnClickListener(this);
+
         mBtnUpload = (Button) findViewById(R.id.btn_upload);
         mBtnUpload.setOnClickListener(this);
+
         mBtnSetting = (ImageView) findViewById(R.id.iv_setting);
         mBtnSetting.setOnClickListener(this);
+
         mBtnLock = (ImageView) findViewById(R.id.iv_lock);
         mBtnLock.setOnClickListener(this);
+
         mBtnPosition = (ImageView) findViewById(R.id.iv_position);
         mBtnPosition.setOnClickListener(this);
+
         mBtnCall = (ImageView) findViewById(R.id.iv_call);
         mBtnCall.setOnClickListener(this);
+
         mTitle = (TextView) findViewById(R.id.title);
         mTitle.setText("真刻");
 
@@ -121,17 +101,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mp3Path = "";
     }
 
-    protected void onMainInitRecord() {
-        Intent intent = new Intent(this, RecordActivity.class);
-        startActivity(intent);
-    }
-
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.btn_record:
+                onMainInitRecord();
+                break;
+
+            case R.id.btn_take_photo:
+                startTake();
+                break;
+
             case R.id.btn_upload:
-                review(true);
+                review(false);
                 break;
 
             case R.id.iv_setting:
@@ -152,29 +135,44 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-    private void upload(final String filePath, final String fileName) {
-        // 网络操作，但开一个线程进行处理
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                FtpClient ftpClient = new FtpClient();
-                Log.e("TAG", "filePath:" + filePath);
-                Log.e("TAG", "fileName:" + fileName);
-                final String str = ftpClient.ftpUpload(filePath, fileName);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (str.equals("1")) {
-                            Toast.makeText(MainActivity.this, "上传成功", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(MainActivity.this, str, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
-        }).start();
+    /**
+     * 进入录音功能
+     */
+    protected void onMainInitRecord() {
+        Intent intent = new Intent(this, RecordActivity.class);
+        startActivity(intent);
     }
 
+
+    /**
+     * 进入拍摄功能，并处理返回结果
+     */
+    public void startTake() {
+        startActivityForResult(new Intent(MainActivity.this, TakePhotoActivity.class), 222);
+    }
+
+    /**
+     * 拍摄功能返回结果的处理
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (resultCode) {
+            case 222:
+                imgPath = data.getStringExtra("imgPath");
+                imgName = data.getStringExtra("imgName");
+                break;
+        }
+    }
+
+
+    /**
+     * 进入本地同步功能
+     * @param isImageMode true for image, false for audio
+     */
     private void review(boolean isImageMode) {
         Intent intent = new Intent(this, ReviewActivity.class);
         Bundle bundle = new Bundle();
@@ -183,27 +181,67 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         startActivity(intent);
     }
 
+    /**
+     * 设置
+     */
     private void userSetting() {
         showToast("设置功能还未开启");
 //        Intent intent = new Intent(this, HistoryActivity.class);
 //        startActivity(intent);
     }
 
+    /**
+     * 密码
+     */
     private void userLock() {
         showToast("密码功能还未开启");
 //        Intent intent = new Intent(this, HistoryActivity.class);
 //        startActivity(intent);
     }
 
+    /**
+     * 定位
+     */
     private void figurePosition() {
         showToast("定位功能还未开启");
 //        Intent intent = new Intent(this, HistoryActivity.class);
 //        startActivity(intent);
     }
 
+    /**
+     * 电话
+     */
     private void helpCall() {
         showToast("求助电话功能还未开启");
 //        Intent intent = new Intent(this, HistoryActivity.class);
 //        startActivity(intent);
     }
+
+//    /**
+//     * 上传文件到服务器
+//     * @param filePath
+//     * @param fileName
+//     */
+//    private void upload(final String filePath, final String fileName) {
+//        // 网络操作，但开一个线程进行处理
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                FtpClient ftpClient = new FtpClient();
+//                Log.e("TAG", "filePath:" + filePath);
+//                Log.e("TAG", "fileName:" + fileName);
+//                final String str = ftpClient.ftpUpload(filePath, fileName);
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (str.equals("1")) {
+//                            Toast.makeText(MainActivity.this, "上传成功", Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            Toast.makeText(MainActivity.this, str, Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
+//            }
+//        }).start();
+//    }
 }

@@ -37,8 +37,6 @@ public class EditTextUtil extends android.support.v7.widget.AppCompatEditText {
     private void init() {
         imgInable = mContext.getResources().getDrawable(R.drawable.ic_clear_black_48dp);
         imgInable.setBounds(0,0,50,50);
-//        imgSubmit = mContext.getResources().getDrawable(R.drawable.ic_check_black_48dp);
-//        imgSubmit.setBounds(0,0,50,50);
         addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -74,27 +72,18 @@ public class EditTextUtil extends android.support.v7.widget.AppCompatEditText {
             Log.e(TAG, "eventX = " + eventX + "; eventY = " + eventY);
             Rect rect = new Rect();
             getGlobalVisibleRect(rect);
-            rect.left = rect.right - 100;
+            Log.d(TAG, "onTouchEvent: rect: " + rect);
+            rect.left = rect.right - 50;
+            rect.top += 500;
+            rect.bottom += 500;
+            Log.d(TAG, "onTouchEvent: cross: " + rect);
             if (rect.contains(eventX, eventY))
                 setText("");
-//            if (rect.contains(eventX, eventY)) {
-//                rect.left = rect.right - 100;
-//                if (rect.contains(eventX, eventY))
-//                    setText("");
-//                else {
-//                    submitText(getText().toString());
-//                }
-//
-//            }
         }
         return super.onTouchEvent(event);
     }
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-    }
-
-    private void submitText(String string) {
-
     }
 }

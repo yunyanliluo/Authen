@@ -41,72 +41,6 @@ public class TakePhotoActivity extends BaseActivity {
     List<String> dList = new ArrayList<>();
     private ShootButton mBtnShoot;
 
-    /**
-     * 拍完照从回调中获取照片
-     */
-    private Camera.PictureCallback picture = new Camera.PictureCallback() {
-        @Override
-        public void onPictureTaken(byte[] data, Camera camera) {
-            relativeLayout.removeAllViews();
-            cv = new CameraView(TakePhotoActivity.this);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.FILL_PARENT,
-                    LinearLayout.LayoutParams.FILL_PARENT);
-            relativeLayout.addView(cv, params);
-            dList.add(PATH_IMAGES + DateUtil.getDate() + ".jpg");
-            Log.e("TAG", "" + dList.size());
-
-            saveFile(data, dList.get(dList.size()-1));
-//            if (dList.size() == 1) {
-//                saveFile(data, dList.get(0));
-//            }
-//            if (dList.size() == 2) {
-//                saveFile(data, dList.get(1));
-//            }
-//            if (dList.size() == 3) {
-//                saveFile(data, dList.get(2));
-//            }
-        }
-    };
-
-    /**
-     * 保存照片
-     */
-    public void saveFile(byte[] data, String path) {
-        FileOutputStream outputStream = null;
-        try {
-            File file = new File(PATH_IMAGES);
-            if (!file.exists()) {
-                file.mkdirs();
-            }
-            Log.e("TAG", path);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight());
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            outputStream = new FileOutputStream(path);
-            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
-            bufferedOutputStream.write(baos.toByteArray(), 0, baos.toByteArray().length);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                outputStream.close();
-                Log.e("TAG", "saveFile...");
-                Toast.makeText(TakePhotoActivity.this, dList.size() + "张", Toast.LENGTH_SHORT).show();
-                if (dList.size() == 1) {
-                    Intent intent = new Intent();
-                    intent.putExtra("imgPath", dList.get(0));
-                    intent.putExtra("imgName", dList.get(0).substring(dList.get(0).length() - 23, dList.get(0).length()));
-                    setResult(222, intent);
-                    TakePhotoActivity.this.finish();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,32 +56,15 @@ public class TakePhotoActivity extends BaseActivity {
                 LinearLayout.LayoutParams.FILL_PARENT,
                 LinearLayout.LayoutParams.FILL_PARENT);
         relativeLayout.addView(cv, params);
-        mBtnShoot = (ShootButton) findViewById(R.id.btn_shoot);
 
+        //拍摄按钮
+        mBtnShoot = (ShootButton) findViewById(R.id.btn_shoot);
         mBtnShoot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 takePicture();
             }
         });
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                for (int i = 0; i < 5; i++) {
-//                    if (dList.size() < 1) {
-//                        //takePicture();
-//                    }
-//                    if (dList.size() > 1) {
-//                        break;
-//                    }
-//                    try {
-//                        Thread.sleep(2500);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        }).start();
     }
 
     /**
@@ -231,6 +148,9 @@ public class TakePhotoActivity extends BaseActivity {
         }
     }
 
+    /**
+     * 拍摄
+     */
     private void takePicture() {
         if (camera != null) {
             camera.takePicture(null, null, picture);
@@ -239,6 +159,76 @@ public class TakePhotoActivity extends BaseActivity {
         }
     }
 
+
+    /**
+     * 拍完照从回调中获取照片，并保存到本地
+     */
+    private Camera.PictureCallback picture = new Camera.PictureCallback() {
+        @Override
+        public void onPictureTaken(byte[] data, Camera camera) {
+            relativeLayout.removeAllViews();
+            cv = new CameraView(TakePhotoActivity.this);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.FILL_PARENT,
+                    LinearLayout.LayoutParams.FILL_PARENT);
+            relativeLayout.addView(cv, params);
+            dList.add(PATH_IMAGES + DateUtil.getDate() + ".jpg");
+            Log.e("TAG", "" + dList.size());
+
+            saveFile(data, dList.get(dList.size()-1));
+        }
+    };
+
+
+    /**
+     * 本地保存照片
+     */
+    public void saveFile(byte[] data, String path) {
+        FileOutputStream outputStream = null;
+        try {
+            //设置照片文件夹
+            File file = new File(PATH_IMAGES);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            Log.e("TAG", path);
+
+            //保存为jpeg
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight());
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            outputStream = new FileOutputStream(path);
+            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
+            bufferedOutputStream.write(baos.toByteArray(), 0, baos.toByteArray().length);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                //结束TakePhotoActivity返回MainActivity
+                outputStream.close();
+                Log.e("TAG", "saveFile...");
+                Toast.makeText(TakePhotoActivity.this, dList.size() + "张", Toast.LENGTH_SHORT).show();
+                if (dList.size() == 1) {
+                    Intent intent = new Intent();
+                    intent.putExtra("imgPath", dList.get(0));
+                    intent.putExtra("imgName", dList.get(0).substring(dList.get(0).length() - 23, dList.get(0).length()));
+                    setResult(222, intent);
+                    TakePhotoActivity.this.finish();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    /**
+     * 后退
+     * @param keyCode
+     * @param event
+     * @return
+     */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {

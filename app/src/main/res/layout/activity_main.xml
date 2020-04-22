@@ -28,7 +28,7 @@
             >
 
             <Button
-                android:id="@+id/btn_press"
+                android:id="@+id/btn_record"
                 android:layout_margin="5dp"
                 android:layout_width="match_parent"
                 android:layout_marginTop="50dp"

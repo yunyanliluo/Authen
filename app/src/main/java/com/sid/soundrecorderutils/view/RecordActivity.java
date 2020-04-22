@@ -115,15 +115,9 @@ public class RecordActivity extends BaseActivity {
         drawable_stop.setBounds(0,0,50,50);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        imgName = "";
-        imgPath = "";
-        mp3Name = "";
-        mp3Path = "";
-    }
-
+    /**
+     * 初始化录音
+     */
     protected void onInitRecord() {
         if(!isReCord) {
             mTv.setVisibility(View.VISIBLE);
@@ -179,6 +173,9 @@ public class RecordActivity extends BaseActivity {
         }
     }
 
+    /**
+     * 开始录音
+     */
     protected void onStartRecord() {
         if(!isReCord) {
             mImgBtnStop.setImageDrawable(drawable_stop);
@@ -187,6 +184,9 @@ public class RecordActivity extends BaseActivity {
         }
     }
 
+    /**
+     * 暂停录音
+     */
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected void onPauseRecord() {
         if(isReCord) {
@@ -196,6 +196,9 @@ public class RecordActivity extends BaseActivity {
         }
     }
 
+    /**
+     * 继续录音
+     */
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected void onResumeRecord() {
         if(isReCord) {
@@ -205,6 +208,9 @@ public class RecordActivity extends BaseActivity {
         }
     }
 
+    /**
+     * 停止录音
+     */
     protected void onStopRecord() {
         if (isReCord) {
             mRecoderUtils.stopRecord();
@@ -216,13 +222,9 @@ public class RecordActivity extends BaseActivity {
         }
     }
 
-    protected void onExitRecord() {
-        if (isReCord) {
-            onCancelRecord();
-        }
-        finish();
-    }
-
+    /**
+     * 取消录音
+     */
     protected void onCancelRecord() {
         if(isReCord) {
             mRecoderUtils.cancelRecord();
@@ -233,6 +235,27 @@ public class RecordActivity extends BaseActivity {
             isPause = false;
         }
     }
+
+    /**
+     * 退出录音
+     */
+    protected void onExitRecord() {
+        if (isReCord) {
+            onCancelRecord();
+        }
+        finish();
+    }
+
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        imgName = "";
+        imgPath = "";
+        mp3Name = "";
+        mp3Path = "";
+    }
+
     @Override
     protected void onStop() {
         super.onStop();

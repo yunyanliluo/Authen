@@ -18,9 +18,9 @@
     <application
         android:name=".application.MyApp"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher_four3"
+        android:icon="@mipmap/focus"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_four3"
+        android:roundIcon="@mipmap/focus"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".view.RecordActivity"></activity>

@@ -86,10 +86,10 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
             discription = diary.substring(24);
             holder.mTvContent.setText(discription);
         }
-        else {
+        else { //显示hint
 //            holder.mEtContent.setText("         一个人乘滴滴总是感觉害怕。最近赶项目，老板催得紧，迫不得已又在十点钟下班回家。\n          嘤嘤嘤，我又累又害怕，打开真刻APP录音才感觉大胆些……");
         }
-        //设置编辑日记
+        //设置可编辑的discription
         holder.mTvContent.setTag(position);
         holder.mTvContent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,6 +115,7 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
                 }).show();
             }
         });
+
         //设置上传按钮
         holder.mIvUpload.setTag(position);
         holder.mIvUpload.setOnClickListener(new View.OnClickListener() {
@@ -158,18 +159,16 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
             Drawable drawable_cam = context.getResources().getDrawable(R.drawable.camera3_tran);
             drawable_cam.setBounds(0,0,30,30);
             holder.mIvCircle.setImageDrawable(drawable_cam);
+
             holder.mIvContent.setVisibility(View.VISIBLE);
-//            Drawable drawable_img = context.getResources().getDrawable(R.drawable.girl);
-//            drawable_img.setBounds(0,0,50,50);
-//            holder.mIvContent.setImageDrawable(drawable_img);
             ViewGroup.LayoutParams params = holder.mIvContent.getLayoutParams();
             params.height = dpTopx(context,300);
             params.width = dpTopx(context,300);
             holder.mIvContent.setLayoutParams(params);
-//            holder.mIvContent.setBackgroundResource(R.drawable.point_green);
             Uri uri = Uri.fromFile(new File(TakePhotoActivity.PATH_IMAGES + diary.substring(0,23)));
             Log.d(TAG, "onBindViewHolder: " + TakePhotoActivity.PATH_IMAGES + diary.substring(0,23));
             holder.mIvContent.setImageURI(uri);
+
             holder.mTvTimelen.setVisibility(View.INVISIBLE);
             holder.mIvPlay.setVisibility(View.INVISIBLE);
         }
@@ -177,13 +176,16 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
             Drawable drawable_rec = context.getResources().getDrawable(R.drawable.recorder_tran);
             drawable_rec.setBounds(0,0,30,30);
             holder.mIvCircle.setImageDrawable(drawable_rec);
+
             holder.mIvContent.setVisibility(View.INVISIBLE);
+
+            holder.mTvTimelen.setVisibility(View.VISIBLE);
             try {
                 holder.mTvTimelen.setText(getDuration(diary.substring(0,23)));
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            holder.mTvTimelen.setVisibility(View.VISIBLE);
+
             holder.mIvPlay.setVisibility(View.VISIBLE);
             holder.mIvPlay.setTag(position);
             Log.d(TAG, "onBindViewHolder: position:" + position);
@@ -218,49 +220,6 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
                 }
             }
         });
-
-//        /**
-//         * 使用 EventBus 来打开修改日记的界面，事件接收函数载 MainActivity 中
-//         */
-//        holder.mIvEdit.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Diary diary = new Diary(holder.mTvDate.getText().toString()+"", holder.mTvTitle.getText().toString()+"", holder.mTvContent.getText().toString()+"");
-//                Log.d(TAG, "holder.mIvEdit.setOnClickListener.onClick: " + holder.mTvDate.getText().toString());
-//                Log.d(TAG, "holder.mIvEdit.setOnClickListener.onClick: " +  diary.date + diary.title + diary.content);
-//                Diary startUpdateDiary = DiaryActivity.queryFromDB(diary);
-////                Diary startUpdateDiary = Diary();
-////                startUpdateDiary.date = holder.mTvDate.getText().toString()+"";
-////                startUpdateDiary.title = holder.mTvTitle.getText().toString()+"";
-////                startUpdateDiary.content = holder.mTvContent.getText().toString()+"";
-//                EventBus.getDefault().post(new StartUpdateDiaryEvent(startUpdateDiary));
-//                //EventBus.getDefault().post(new StartUpdateDiaryEvent(position));
-////                EventBus.getDefault().post(new StartUpdateDiaryEvent(DiaryViewHolder.mTvDate.getText().toString()));
-//            }
-//        });
-
-//        /**
-//         * 使用 EventBus 来删除日记，事件接收函数载 MainActivity 中
-//         */
-//        holder.mIvRemove.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-//                alertDialogBuilder.setMessage("Are you sure to remove the diary?").setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        Diary diary = new Diary(holder.mTvDate.getText().toString()+"", holder.mTvTitle.getText().toString()+"", holder.mTvContent.getText().toString()+"");
-//                        Log.d(TAG, "holder.mIvRemove.setOnClickListener.onClick: " +  diary.date + diary.title + diary.content);
-//                        Diary startDeleteDiary = DiaryActivity.queryFromDB(diary);
-//                        EventBus.getDefault().post(new StartDeleteDiaryEvent(startDeleteDiary));
-//                        Intent intent = new Intent(context, HistoryActivity.class);
-//                        context.startActivity(intent);
-//                    }
-//                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int which) {
-//                    }
-//                }).show();
-//            }
-//        });
     }
 
     @Override
@@ -280,7 +239,7 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
         ImageView mIvUpload;
         ImageView mIvRemove;
         LinearLayout mLl;
-        Drawable drawable_test;
+
         public DiaryViewHolder(View itemView) {
             super(itemView);
             mTvDate = (TextView) itemView.findViewById(R.id.tv_date);
@@ -295,8 +254,8 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
         }
     }
 
-    /*
-     *dp转px
+    /**
+     * 图片大小单位 dp转px
      */
     private int dpTopx(Context context, float dp){
         float scale = context.getResources().getDisplayMetrics().density;
@@ -308,19 +267,12 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
      * @param v
      */
     public void onThumbnailClick(View v) {
-           // 非全屏显示的方法
-//         final AlertDialog dialog_view = new AlertDialog.Builder(context).create();
-//         ImageView imgView = getView();
-//         dialog_view.setView(imgView);
-//         dialog_view.show();
-
         // 全屏显示的方法
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
         ImageView iv = (ImageView)v;
         ImageView imgView = getView(iv);
         dialog.setContentView(imgView);
         dialog.show();
-
 
         // 点击图片消失
         imgView.setOnClickListener(new View.OnClickListener() {
@@ -332,6 +284,11 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
         });
     }
 
+    /**
+     * 从一个已有的imageview，生成一个新的imageview
+     * @param iv
+     * @return
+     */
     private ImageView getView(ImageView iv) {
         ImageView imgView = new ImageView(context);
         imgView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -344,7 +301,7 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
     }
 
     /**
-     * 将要修改某一条记录的TextView时，返回一个可编辑的EditTextUtil组件
+     * 从一个TextView，生成一个可编辑的EditTextUtil
      * @param tv 想要修改的某一条记录的TextView组件
      * @return
      */
@@ -473,7 +430,7 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
     }
 
     /**
-     * 删除某一条记录及相关文件
+     * 删除某一条记录及本地文件
      * @param position 读取本地存储的所有音频/视频文件时，待上传文件所在的编号.stringList.get(position).substring(0,23)是文件名
      */
     private void deleteFile(Integer position) {
