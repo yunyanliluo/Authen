@@ -96,7 +96,7 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
             public void onClick(final View v) {
                 final TextView tv = (TextView)v;
                 final String content = tv.getText().toString();
-                final EditTextUtil ETView = getEditTextUtil(tv);
+                final EditText ETView = getEditTextUtil(tv);
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                 alertDialogBuilder.setView(ETView);
                 alertDialogBuilder.setTitle("编辑中……");
@@ -301,13 +301,13 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
     }
 
     /**
-     * 从一个TextView，生成一个可编辑的EditTextUtil
+     * 从一个TextView，生成一个可编辑的EditText
      * @param tv 想要修改的某一条记录的TextView组件
      * @return
      */
-    private EditTextUtil getEditTextUtil(TextView tv) {
+    private EditText getEditTextUtil(TextView tv) {
         String content = tv.getText().toString();
-        EditTextUtil etuView = new EditTextUtil(context);
+        EditText etuView = new EditText(context);
         etuView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         Log.d(TAG, "getEditTextUtil: " + content);
         if(content==null ||content=="") {

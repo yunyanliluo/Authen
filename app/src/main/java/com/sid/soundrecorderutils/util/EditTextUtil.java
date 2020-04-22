@@ -73,9 +73,8 @@ public class EditTextUtil extends android.support.v7.widget.AppCompatEditText {
             Rect rect = new Rect();
             getGlobalVisibleRect(rect);
             Log.d(TAG, "onTouchEvent: rect: " + rect);
-            rect.left = rect.right - 50;
-            rect.top += 500;
-            rect.bottom += 500;
+            rect.left = rect.right - 100;
+            rect.bottom += 50;
             Log.d(TAG, "onTouchEvent: cross: " + rect);
             if (rect.contains(eventX, eventY))
                 setText("");

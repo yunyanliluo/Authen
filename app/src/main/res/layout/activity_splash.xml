@@ -10,9 +10,58 @@
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
+        android:id="@+id/iv_tubiao"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="100dp"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/tubiao"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/background_welcome"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:gravity="center"
+        android:id="@+id/tv_authen"
+        android:text="真刻"
+        android:textColor="@color/primary_text"
+        android:textStyle="bold"
+        android:textSize="25dp"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:gravity="center"
+        android:id="@+id/tv_welcome1"
+        android:text="记录一份证据"
+        android:textColor="@color/primary_text"
+        android:textStyle="bold"
+        android:textSize="25dp"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/tv_welcome2"
+        android:text="拯救一个生命"
+        android:textColor="@color/primary_text"
+        android:textStyle="bold"
+        android:textSize="25dp"
+        />
+
+    <ImageView
+        android:id="@+id/iv_zhiwen"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_marginTop="125dp"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/zhiwen"
         android:scaleType="centerCrop" />
 </LinearLayout>
