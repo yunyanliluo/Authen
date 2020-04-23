@@ -44,10 +44,11 @@ public class LoginActivity extends Activity {
 //                        mTvWelcome1.getLocationOnScreen(location);//获取视图位置
 //                        int x = location[0];
 //                        int y = location[1];
-//                        TranslateAnimation tAnim = new TranslateAnimation(x, x, y, y-50);//设置视图上下移动的位置
-//                        tAnim .setDuration(1000);
-//                        tAnim .setRepeatCount(Animation.INFINITE);
-//                        tAnim .setRepeatMode(Animation.REVERSE);
+//                        TranslateAnimation tAnim = new TranslateAnimation(x, x, y, y-500);//设置视图上下移动的位置
+//                        tAnim .setDuration(5000);
+//                        tAnim .setRepeatCount(0);
+//                        tAnim .setRepeatMode(Animation.RESTART);
+//                        tAnim.setFillAfter(true);
 //                        mTvWelcome1.startAnimation(tAnim);
                         mTvWelcome1.setVisibility(View.INVISIBLE);
                         mTvWelcome2.setVisibility(View.INVISIBLE);
