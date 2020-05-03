@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,8 +41,21 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.HandshakeCompletedListener;
 
 public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapter.DiaryViewHolder>{
@@ -167,8 +182,35 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
             holder.mIvContent.setLayoutParams(params);
             Uri uri = Uri.fromFile(new File(TakePhotoActivity.PATH_IMAGES + diary.substring(0,23)));
             Log.d(TAG, "onBindViewHolder: " + TakePhotoActivity.PATH_IMAGES + diary.substring(0,23));
-            holder.mIvContent.setImageURI(uri);
+//            holder.mIvContent.setImageURI(uri);
+            //------------------
+            try {
+                FileInputStream fis = null;
+                fis = new FileInputStream(TakePhotoActivity.PATH_IMAGES + diary.substring(0,23));
+                ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
+                SecretKeySpec sks = new SecretKeySpec(TakePhotoActivity.AES_KEY.getBytes(),
+                        "AES");
+                Cipher cipher = Cipher.getInstance("AES");
+                cipher.init(Cipher.DECRYPT_MODE, sks);
+                //CipherInputStream 为加密输入流
+                CipherInputStream cis = new CipherInputStream(fis, cipher);
+                int b;
+                byte[] d = new byte[1024];
+                while ((b = cis.read(d)) != -1) {
+                    out.write(d, 0, b);
+                }
+                out.flush();
+                out.close();
+                cis.close();
+                //获取字节流显示图片
+                byte[] bytes= out.toByteArray();
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                holder.mIvContent.setImageBitmap(bitmap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
+            //-----------
             holder.mTvTimelen.setVisibility(View.INVISIBLE);
             holder.mIvPlay.setVisibility(View.INVISIBLE);
         }
@@ -349,12 +391,27 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
     private void playRecord(Integer position) {
         String filename = stringList.get(position).substring(0,23);
         File mp3file = FileUtil.getFile(AudioRecoderUtils.MP3_PATH + filename);
+
+
+//        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         try {
+
             recordPlayerManager.playRecordFile(mp3file);
-        }
-        catch(IOException e) {
+
+
+
+        } catch(IOException e) {
             Log.d(TAG, "playRecord: IOException");
         }
+
+//        try {
+//
+//
+//
+//        }
+//        catch(IOException e) {
+//            Log.d(TAG, "playRecord: IOException");
+//        }
     }
 
     /**
