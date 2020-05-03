@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eee"
+    android:orientation="vertical"
+    tools:context="com.sid.soundrecorderutils.view.RecordActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/lv_title"
+        >
+
+        <ImageView
+            android:id="@+id/iv_callback"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:paddingLeft="10dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_arrow_back_black_48dp"/>
+
+        <TextView
+            android:id="@+id/tv_calltitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="求助电话"
+            android:textSize="20dp"
+            android:textColor="@color/primary_text"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:id="@+id/ll_menus"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <Button
+            android:id="@+id/btn_110"
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="200dp"
+            android:layout_marginRight="200dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:paddingTop="10dp"
+            android:paddingLeft="50dp"
+            android:paddingBottom="10dp"
+            android:background="@drawable/button_select"
+            android:textSize="25dp"
+            android:text="110" />
+
+        <Button
+            android:id="@+id/btn_120"
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="200dp"
+            android:layout_marginRight="200dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:paddingTop="10dp"
+            android:paddingLeft="50dp"
+            android:paddingBottom="10dp"
+            android:background="@drawable/button_select"
+            android:textSize="25dp"
+            android:text="120" />
+
+        <Button
+            android:id="@+id/btn_119"
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="200dp"
+            android:layout_marginRight="200dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:paddingTop="10dp"
+            android:paddingLeft="50dp"
+            android:paddingBottom="10dp"
+            android:background="@drawable/button_select"
+            android:textSize="25dp"
+            android:text="119" />
+
+        <Button
+            android:id="@+id/btn_cont1"
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="200dp"
+            android:layout_marginRight="200dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:paddingTop="10dp"
+            android:paddingLeft="50dp"
+            android:paddingBottom="10dp"
+            android:background="@drawable/button_select"
+            android:textSize="25dp"
+            android:text="常用联系人" />
+
+
+    </LinearLayout>
+
+</RelativeLayout>

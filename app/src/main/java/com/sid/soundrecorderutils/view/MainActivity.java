@@ -186,17 +186,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
      */
     private void userSetting() {
         showToast("设置功能还未开启");
-//        Intent intent = new Intent(this, HistoryActivity.class);
+//        Intent intent = new Intent(this, SettingActivity.class);
 //        startActivity(intent);
     }
 
     /**
-     * 密码
+     * 锁定
      */
     private void userLock() {
-        showToast("密码功能还未开启");
-//        Intent intent = new Intent(this, HistoryActivity.class);
-//        startActivity(intent);
+        sendBroadcast(new Intent("action.exit"));
     }
 
     /**
@@ -212,9 +210,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
      * 电话
      */
     private void helpCall() {
-        showToast("求助电话功能还未开启");
-//        Intent intent = new Intent(this, HistoryActivity.class);
-//        startActivity(intent);
+        Intent intent = new Intent(this, CallActivity.class);
+        startActivity(intent);
     }
 
 //    /**

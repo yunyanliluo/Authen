@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.sid.soundrecorderutils.R;
 import com.sid.soundrecorderutils.util.EditTextUtil;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends BaseActivity {
     TextView mTvWelcome1, mTvWelcome2, mTvUsername, mTvPassword;
     EditTextUtil mEtUsername, mEtPassword;
     ImageView mIvLogin;
