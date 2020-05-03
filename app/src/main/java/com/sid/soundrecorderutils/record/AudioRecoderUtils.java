@@ -201,7 +201,7 @@ public class AudioRecoderUtils {
             }
         }
         try {
-            File file = new File(filePath);
+            File file = new File(filePathtmp);
             if (file.exists())
                 file.delete();
             filePath = "";
