@@ -8,22 +8,44 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.sid.soundrecorderutils.db.DiaryDataBaseManager;
 import com.sid.soundrecorderutils.util.DateUtil;
+import com.sid.soundrecorderutils.util.FileUtil;
 import com.sid.soundrecorderutils.util.LogUtils;
 import com.sid.soundrecorderutils.view.MainActivity;
+import com.sid.soundrecorderutils.view.TakePhotoActivity;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 /**
  * 录音类
  */
 public class AudioRecoderUtils {
     private String TAG = "AudioRecoderUtils";
     private String filePath;
+    private String filePathtmp;
     private String fileName;
+    private String fileNametmp;
+    private FileInputStream fis = null;
     public static String MP3_PATH = Environment.getExternalStorageDirectory() + "/SoundRecord/record/";
     private String FolderPath = MP3_PATH;
     private MediaRecorder mMediaRecorder;
@@ -66,9 +88,11 @@ public class AudioRecoderUtils {
             mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
             fileName = DateUtil.getDate() + ".mp3";
+            fileNametmp = DateUtil.getDate()+"tmp" + ".mp3";
+            filePathtmp=FolderPath + fileNametmp;
             filePath = FolderPath + fileName;
             /* ③准备 */
-            mMediaRecorder.setOutputFile(filePath);
+            mMediaRecorder.setOutputFile(filePathtmp);
             mMediaRecorder.setMaxDuration(MAX_LENGTH);
             mMediaRecorder.prepare();
             /* ④开始 */
@@ -100,9 +124,41 @@ public class AudioRecoderUtils {
             mMediaRecorder.reset();
             mMediaRecorder.release();
             mMediaRecorder = null;
+            //加密
+            fis = new FileInputStream(filePathtmp);
+//            byte[] oldByte = new byte[(int) filePathtmp.length()];
+            FileOutputStream fos = new FileOutputStream(filePath);
+            //SecretKeySpec此类来根据一个字节数组构造一个 SecretKey
+            SecretKeySpec sks = new SecretKeySpec(TakePhotoActivity.AES_KEY.getBytes(),
+                    "AES");
+            //Cipher类为加密和解密提供密码功能,获取实例
+            Cipher cipher = Cipher.getInstance("AES");
+            //初始化
+            cipher.init(Cipher.ENCRYPT_MODE, sks);
+            //CipherOutputStream 为加密输出流
+            CipherOutputStream cos = new CipherOutputStream(fos, cipher);
+            int b;
+            byte[] d = new byte[1024];
+            while ((b = fis.read(d)) != -1) {
+                cos.write(d, 0, b);
+            }
+            cos.flush();
+            cos.close();
+            fis.close();
+
+            //加密结束
+            //删除多余音频
+            File file = new File(filePathtmp);
+            // 如果文件路径所对应的文件存在，并且是一个文件，则直接删除
+            if (file.exists() && file.isFile()) {
+                file.delete();
+            }
             audioStatusUpdateListener.onStop(filePath);
+
+
+
             filePath = "";
-        } catch (RuntimeException e) {
+        } catch (RuntimeException | FileNotFoundException e) {
             if (mMediaRecorder != null) {
                 mMediaRecorder.reset();
                 mMediaRecorder.release();
@@ -114,6 +170,14 @@ public class AudioRecoderUtils {
             }
 //            diaryDataBaseManager.insert(fileName.substring(0,10), fileName.substring(11,19), 0);
             filePath = "";
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
         }
         return endTime - startTime;
     }

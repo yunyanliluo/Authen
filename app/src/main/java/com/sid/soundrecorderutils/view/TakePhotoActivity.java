@@ -31,6 +31,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.spec.SecretKeySpec;
+
 
 public class TakePhotoActivity extends BaseActivity {
     RelativeLayout relativeLayout = null;
@@ -40,6 +45,7 @@ public class TakePhotoActivity extends BaseActivity {
     private TakePhotoActivity.CameraView cv = null;
     List<String> dList = new ArrayList<>();
     private ShootButton mBtnShoot;
+    public static final String AES_KEY = "PKUAuthenKey1024";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -198,14 +204,30 @@ public class TakePhotoActivity extends BaseActivity {
             bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight());
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            outputStream = new FileOutputStream(path);
-            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
-            bufferedOutputStream.write(baos.toByteArray(), 0, baos.toByteArray().length);
+            byte[] bytes = baos.toByteArray();
+            //SecretKeySpec此类来根据一个字节数组构造一个 SecretKey
+            SecretKeySpec sks = new SecretKeySpec(AES_KEY.getBytes(),
+                    "AES");
+            //Cipher类为加密和解密提供密码功能,获取实例
+            Cipher cipher = Cipher.getInstance("AES");
+            //初始化
+            cipher.init(Cipher.ENCRYPT_MODE, sks);
+            //CipherOutputStream 为加密输出流
+                        outputStream = new FileOutputStream(path);
+            CipherOutputStream cos = new CipherOutputStream(outputStream, cipher);
+            cos.write(bytes);
+            cos.flush();
+            cos.close();
+//            outputStream.close();
+//            outputStream = new FileOutputStream(path);
+//            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
+//            bufferedOutputStream.write(baos.toByteArray(), 0, baos.toByteArray().length);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {
                 //结束TakePhotoActivity返回MainActivity
+
                 outputStream.close();
                 Log.e("TAG", "saveFile...");
                 Toast.makeText(TakePhotoActivity.this, dList.size() + "张", Toast.LENGTH_SHORT).show();
