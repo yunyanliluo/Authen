@@ -25,7 +25,7 @@ import com.sid.soundrecorderutils.util.EditTextUtil;
 public class LoginActivity extends BaseActivity {
     TextView mTvWelcome1, mTvWelcome2, mTvUsername, mTvPassword;
     EditTextUtil mEtUsername, mEtPassword;
-    ImageView mIvLogin;
+    ImageView mIvLogin, mIvSignup;
 
     Handler pause = new Handler() {
         public void handleMessage(Message msg) {
@@ -56,11 +56,20 @@ public class LoginActivity extends BaseActivity {
                         mTvPassword.setVisibility(View.VISIBLE);
                         mEtUsername.setVisibility(View.VISIBLE);
                         mEtPassword.setVisibility(View.VISIBLE);
+                        mIvSignup.setVisibility(View.VISIBLE);
 
                         mIvLogin.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(final View v) {
                                 userLogin();
+                            }
+                        });
+                        mIvSignup.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(final View v) {
+                                Intent intent = new Intent();
+                                intent.setClass(LoginActivity.this, SignupActivity.class);
+                                LoginActivity.this.startActivity(intent);
                             }
                         });
                     }
@@ -85,11 +94,13 @@ public class LoginActivity extends BaseActivity {
         mEtUsername = (EditTextUtil) findViewById(R.id.et_username);
         mEtPassword = (EditTextUtil) findViewById(R.id.et_password);
         mIvLogin = (ImageView) findViewById(R.id.iv_zhiwen);
+        mIvSignup = (ImageView) findViewById(R.id.iv_zhuce);
 
         mTvUsername.setVisibility(View.INVISIBLE);
         mTvPassword.setVisibility(View.INVISIBLE);
         mEtUsername.setVisibility(View.INVISIBLE);
         mEtPassword.setVisibility(View.INVISIBLE);
+        mIvSignup.setVisibility(View.INVISIBLE);
 
         this.pause.sendEmptyMessageDelayed(1, 2000);
     }
