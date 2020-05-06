@@ -473,10 +473,10 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
                 Log.e("TAG", "filePath:" + filePath);
                 Log.e("TAG", "fileName:" + fileName);
                 API api = new API(context);
-//                String [] res1 = api.register("abcd","123456");
+//                String [] res1 = api.register("abcde","1234567");
 //                if(res1 != null)
 //                System.out.println("register:"+res1[0]);
-//                String[] res2 = api.login("abcd","123456");
+//                String[] res2 = api.login("abcde","1234567");
 //                if(res2 != null)
 //                System.out.println("login:"+res2[0]);
 //                String[] res3 = api.hash(fileName,"123","123");

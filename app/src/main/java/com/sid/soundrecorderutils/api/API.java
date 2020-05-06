@@ -132,6 +132,8 @@ public class API {
      * String[2]: token
      */
     public String[] login(String username, String password) {
+        System.out.println(username);
+        System.out.println(password);
         JSONObject json = new JSONObject();
         try {
             json.put("username", username);
@@ -144,7 +146,9 @@ public class API {
         OkHttpClient okHttpClient = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(MediaType
                 .parse("application/json; charset=utf-8"), json.toString());
-        Request request = new Request.Builder().url(address)
+        Request request = new Request
+                .Builder()
+                .url(address)
                 .addHeader("Content-Type", "application/json")
                 .post(requestBody)
                 .build();
@@ -179,6 +183,7 @@ public class API {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("currentToken", res[2]);
             editor.commit();
+            System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
         }
         return res;
     }
@@ -475,6 +480,7 @@ public class API {
                     uploader.finish();
 
                     System.out.println("Upload finished.");
+                    System.out.println("Upload available at:"+uploader.getUploadURL().toString());
                     System.out.format("Upload available at: %s", uploader.getUploadURL().toString());
                 }
             };
