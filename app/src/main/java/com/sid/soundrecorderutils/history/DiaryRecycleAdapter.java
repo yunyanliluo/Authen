@@ -59,7 +59,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.HandshakeCompletedListener;
 
-public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapter.DiaryViewHolder>{
+public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapter.DiaryViewHolder> {
     private static final String TAG = DiaryRecycleAdapter.class.getSimpleName();
     private Context context;
     private List<String> stringList;
@@ -69,12 +69,12 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
     private static DiaryDataBaseManager diaryDataBaseManager;
 
     //构造方法，传入数据
-    public DiaryRecycleAdapter(Context context, List<String> stringList, boolean isImageMode){
+    public DiaryRecycleAdapter(Context context, List<String> stringList, boolean isImageMode) {
         this.context = context;
         this.stringList = stringList;
         this.isImageMode = isImageMode;
         recordPlayerManager = new RecordPlayer(context, new Handler()).getInstance();
-        if(diaryDataBaseManager == null) {
+        if (diaryDataBaseManager == null) {
             diaryDataBaseManager = new DiaryDataBaseManager(context);
         }
     }
@@ -82,7 +82,7 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
     @Override
     public DiaryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //创建ViewHolder，返回每一项的布局
-        inflater = LayoutInflater.from(context).inflate(R.layout.item_diary,parent,false);
+        inflater = LayoutInflater.from(context).inflate(R.layout.item_diary, parent, false);
         DiaryViewHolder myViewHolder = new DiaryViewHolder(inflater);
         return myViewHolder;
     }
@@ -92,17 +92,16 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
         //将数据和控件绑定
         String diary = stringList.get(position);
         //distinguish date, title and content from a diary item
-        holder.mTvDate.setText(diary.substring(0,4) + "年" + diary.substring(5,7) + "月" + diary.substring(8,10) + "日 "
-                                +diary.substring(11,13) + "时" + diary.substring(14,16) + "分" + diary.substring(17,19) + "秒");
+        holder.mTvDate.setText(diary.substring(0, 4) + "年" + diary.substring(5, 7) + "月" + diary.substring(8, 10) + "日 "
+                + diary.substring(11, 13) + "时" + diary.substring(14, 16) + "分" + diary.substring(17, 19) + "秒");
         Log.d(TAG, "onBindViewHolder: " + holder.mTvDate.getText());
         String discription = new String();
         Log.d(TAG, "onBindViewHolder: " + diary.length());
         Log.d(TAG, "onBindViewHolder: " + diary.substring(24));
-        if(diary != null && diary.length()>24 && diary.substring(24)!="null"){
+        if (diary != null && diary.length() > 24 && diary.substring(24) != "null") {
             discription = diary.substring(24);
             holder.mTvContent.setText(discription);
-        }
-        else { //显示hint
+        } else { //显示hint
 //            holder.mEtContent.setText("         一个人乘滴滴总是感觉害怕。最近赶项目，老板催得紧，迫不得已又在十点钟下班回家。\n          嘤嘤嘤，我又累又害怕，打开真刻APP录音才感觉大胆些……");
         }
         //设置可编辑的discription
@@ -110,7 +109,7 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
         holder.mTvContent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                final TextView tv = (TextView)v;
+                final TextView tv = (TextView) v;
                 final String content = tv.getText().toString();
                 final EditText ETView = getEditTextUtil(tv);
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
@@ -171,23 +170,23 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
         });
 
         //根据图片或音频模式布局
-        if(isImageMode) { //image
+        if (isImageMode) { //image
             Drawable drawable_cam = context.getResources().getDrawable(R.drawable.camera3_tran);
-            drawable_cam.setBounds(0,0,30,30);
+            drawable_cam.setBounds(0, 0, 30, 30);
             holder.mIvCircle.setImageDrawable(drawable_cam);
 
             holder.mIvContent.setVisibility(View.VISIBLE);
             ViewGroup.LayoutParams params = holder.mIvContent.getLayoutParams();
-            params.height = dpTopx(context,300);
-            params.width = dpTopx(context,300);
+            params.height = dpTopx(context, 300);
+            params.width = dpTopx(context, 300);
             holder.mIvContent.setLayoutParams(params);
-            Uri uri = Uri.fromFile(new File(TakePhotoActivity.PATH_IMAGES + diary.substring(0,23)));
-            Log.d(TAG, "onBindViewHolder: " + TakePhotoActivity.PATH_IMAGES + diary.substring(0,23));
+            Uri uri = Uri.fromFile(new File(TakePhotoActivity.PATH_IMAGES + diary.substring(0, 23)));
+            Log.d(TAG, "onBindViewHolder: " + TakePhotoActivity.PATH_IMAGES + diary.substring(0, 23));
 //            holder.mIvContent.setImageURI(uri);
             //------------------
             try {
                 FileInputStream fis = null;
-                fis = new FileInputStream(TakePhotoActivity.PATH_IMAGES + diary.substring(0,23));
+                fis = new FileInputStream(TakePhotoActivity.PATH_IMAGES + diary.substring(0, 23));
                 ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
                 SecretKeySpec sks = new SecretKeySpec(TakePhotoActivity.AES_KEY.getBytes(),
                         "AES");
@@ -204,7 +203,7 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
                 out.close();
                 cis.close();
                 //获取字节流显示图片
-                byte[] bytes= out.toByteArray();
+                byte[] bytes = out.toByteArray();
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 holder.mIvContent.setImageBitmap(bitmap);
             } catch (Exception e) {
@@ -214,17 +213,16 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
             //-----------
             holder.mTvTimelen.setVisibility(View.INVISIBLE);
             holder.mIvPlay.setVisibility(View.INVISIBLE);
-        }
-        else { //audio
+        } else { //audio
             Drawable drawable_rec = context.getResources().getDrawable(R.drawable.recorder_tran);
-            drawable_rec.setBounds(0,0,30,30);
+            drawable_rec.setBounds(0, 0, 30, 30);
             holder.mIvCircle.setImageDrawable(drawable_rec);
 
             holder.mIvContent.setVisibility(View.INVISIBLE);
 
             holder.mTvTimelen.setVisibility(View.VISIBLE);
             try {
-                holder.mTvTimelen.setText(getDuration(diary.substring(0,23)));
+                holder.mTvTimelen.setText(getDuration(diary.substring(0, 23)));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -257,7 +255,7 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
                 if (holder.mIvUpload.getVisibility() == View.INVISIBLE) {
                     holder.mIvUpload.setVisibility(View.VISIBLE);
                     holder.mIvRemove.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     holder.mIvUpload.setVisibility(View.INVISIBLE);
                     holder.mIvRemove.setVisibility(View.INVISIBLE);
                 }
@@ -272,7 +270,7 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
     }
 
     //内部类，绑定控件
-    static class DiaryViewHolder extends RecyclerView.ViewHolder{
+    static class DiaryViewHolder extends RecyclerView.ViewHolder {
         TextView mTvDate;
         TextView mTvContent;
         TextView mTvTimelen;
@@ -300,19 +298,20 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
     /**
      * 图片大小单位 dp转px
      */
-    private int dpTopx(Context context, float dp){
+    private int dpTopx(Context context, float dp) {
         float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
     }
 
     /**
      * 图片点击放大
+     *
      * @param v
      */
     public void onThumbnailClick(View v) {
         // 全屏显示的方法
         final Dialog dialog = new Dialog(context, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
-        ImageView iv = (ImageView)v;
+        ImageView iv = (ImageView) v;
         ImageView imgView = getView(iv);
         dialog.setContentView(imgView);
         dialog.show();
@@ -329,6 +328,7 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
 
     /**
      * 从一个已有的imageview，生成一个新的imageview
+     *
      * @param iv
      * @return
      */
@@ -345,6 +345,7 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
 
     /**
      * 从一个TextView，生成一个可编辑的EditText
+     *
      * @param tv 想要修改的某一条记录的TextView组件
      * @return
      */
@@ -353,10 +354,9 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
         EditText etuView = new EditText(context);
         etuView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         Log.d(TAG, "getEditTextUtil: " + content);
-        if(content==null ||content=="") {
+        if (content == null || content == "") {
             etuView.setHint("在这里写点儿什么……");
-        }
-        else {
+        } else {
             etuView.setText(content);
         }
 
@@ -366,31 +366,32 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
 
     /**
      * 修改某一条记录的文字描述，更新到本地数据库
-     * @param position 读取本地存储的所有音频/视频文件时，待上传文件所在的编号.stringList.get(position).substring(0,23)是文件名
+     *
+     * @param position       读取本地存储的所有音频/视频文件时，待上传文件所在的编号.stringList.get(position).substring(0,23)是文件名
      * @param content_update 新的文字描述
      */
     private void updateContent(Integer position, String content_update) {
         Log.d(TAG, "updateContent: new discription: " + content_update);
-        String date = stringList.get(position).substring(0,10);
-        String time = stringList.get(position).substring(11,19);
+        String date = stringList.get(position).substring(0, 10);
+        String time = stringList.get(position).substring(11, 19);
         Diary diary;
-        if(isImageMode) {
+        if (isImageMode) {
             diary = new Diary(date, time, 1, content_update);
-        }
-        else {
+        } else {
             diary = new Diary(date, time, 0, content_update);
         }
-        if(diary != null)
-            Log.d(TAG, "updateContent: " +diary.toString());
+        if (diary != null)
+            Log.d(TAG, "updateContent: " + diary.toString());
         diaryDataBaseManager.update(diary);
     }
 
     /**
      * 播放录音文件
+     *
      * @param position 读取本地存储的所有音频文件时，待上传文件所在的编号.stringList.get(position).substring(0,23)是文件名
      */
     private void playRecord(Integer position) {
-        String filename = stringList.get(position).substring(0,23);
+        String filename = stringList.get(position).substring(0, 23);
         File mp3file = FileUtil.getFile(AudioRecoderUtils.MP3_PATH + filename);
 
 
@@ -400,8 +401,7 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
             recordPlayerManager.playRecordFile(mp3file);
 
 
-
-        } catch(IOException e) {
+        } catch (IOException e) {
             Log.d(TAG, "playRecord: IOException");
         }
 
@@ -417,6 +417,7 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
 
     /**
      * 获取录音时长
+     *
      * @param filename 录音文件文件名
      * @return
      * @throws IOException
@@ -427,17 +428,15 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
         String str_mm = new String();
         duration /= 1000; //ms -> second
         int ss = duration % 60;
-        if(ss > 9) {
+        if (ss > 9) {
             str_ss = Integer.toString(ss);
-        }
-        else {
+        } else {
             str_ss = "0" + Integer.toString(ss);
         }
         int mm = duration / 60;
-        if(ss > 9) {
+        if (ss > 9) {
             str_mm = Integer.toString(mm);
-        }
-        else {
+        } else {
             str_mm = "0" + Integer.toString(mm);
         }
         return str_mm + ":" + str_ss;
@@ -445,20 +444,21 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
 
     /**
      * 上传文件
+     *
      * @param position 读取本地存储的所有音频/视频文件时，待上传文件所在的编号.stringList.get(position).substring(0,23)是文件名
      */
     private void uploadFile(Integer position) {
-        String filename = stringList.get(position).substring(0,23);
-        if(isImageMode) {
+        String filename = stringList.get(position).substring(0, 23);
+        if (isImageMode) {
             uploadFromDiary(TakePhotoActivity.PATH_IMAGES + filename, filename, new ReviewActivity(), context);
-        }
-        else {
+        } else {
             uploadFromDiary(AudioRecoderUtils.MP3_PATH + filename, filename, new ReviewActivity(), context);
         }
     }
 
     /**
      * 上传文件的ftp操作
+     *
      * @param filePath 完整路径
      * @param fileName 文件名
      * @param activity
@@ -482,18 +482,46 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
 //                String[] res3 = api.hash(fileName,"123","123");
 //                if(res3 != null)
 //                System.out.println("hash:"+res3[0]);
+                //=====================上传之前校验hash值=========================
+                DiaryDataBaseManager diaryDataBaseManager = new DiaryDataBaseManager(context);
+                Diary startQueryDiary = new Diary(fileName.substring(0, 10), fileName.substring(11, 19), 0);
+                Diary queryResult = diaryDataBaseManager.queryDiary(startQueryDiary);
+                String ordinalHash = queryResult.hashcode;
+                String currentHash = FileUtil.getFileHash(filePath);
+                if (!ordinalHash.equals(currentHash)) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, fileName + "上传失败,文件被篡改", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    return;
+                }
+                //=====================上传之前校验hash值=========================
+                //=====================上传文件之前先上传hash=====================
+                String[] res = api.hash(fileName,currentHash,String.valueOf(System.currentTimeMillis()));
+                if(res[0].equals("-1")){
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, fileName + "上传失败(hash上传失败)，请稍后再试", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    return;
+                }
+                //=====================上传文件之前先上传hash=====================
 
-                final int responseCode = api.upload(fileName,filePath);
+                final int responseCode = api.upload(fileName, filePath);
 //                final String str = ftpClient.ftpUpload(filePath, fileName);
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (responseCode == -1) {
-                            Toast.makeText(context, fileName+"上传失败（文件未找到）", Toast.LENGTH_LONG).show();
-                        } else if(responseCode == 0){
-                            Toast.makeText(context, fileName+"上传失败，延时上传", Toast.LENGTH_LONG).show();
-                        }else {
-                            Toast.makeText(context, fileName+"上传成功", Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, fileName + "上传失败（文件未找到）", Toast.LENGTH_LONG).show();
+                        } else if (responseCode == 0) {
+                            Toast.makeText(context, fileName + "上传失败，延时上传", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(context, fileName + "上传成功", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -503,14 +531,14 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
 
     /**
      * 删除某一条记录及本地文件
+     *
      * @param position 读取本地存储的所有音频/视频文件时，待上传文件所在的编号.stringList.get(position).substring(0,23)是文件名
      */
     private void deleteFile(Integer position) {
-        String filename = stringList.get(position).substring(0,23);
-        if(isImageMode) {
+        String filename = stringList.get(position).substring(0, 23);
+        if (isImageMode) {
             FileUtil.deleteSingleFile(TakePhotoActivity.PATH_IMAGES + filename, context);
-        }
-        else {
+        } else {
             FileUtil.deleteSingleFile(AudioRecoderUtils.MP3_PATH + filename, context);
         }
         Intent intent = new Intent(context, ReviewActivity.class);

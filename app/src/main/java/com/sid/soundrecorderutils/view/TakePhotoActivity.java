@@ -23,7 +23,10 @@ import android.widget.Toast;
 
 import com.senierr.shootbutton.ShootButton;
 import com.sid.soundrecorderutils.R;
+import com.sid.soundrecorderutils.db.Diary;
+import com.sid.soundrecorderutils.db.DiaryDataBaseManager;
 import com.sid.soundrecorderutils.util.DateUtil;
+import com.sid.soundrecorderutils.util.FileUtil;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -232,6 +235,28 @@ public class TakePhotoActivity extends BaseActivity {
             cos.write(bytes);
             cos.flush();
             cos.close();
+
+
+            //=================拍照完毕后存储文件hash值======================
+            String _filename = dList.get(0).substring(dList.get(0).length() - 23, dList.get(0).length());
+            String hash = FileUtil.getFileHash(path);
+            String date = _filename.substring(0,10);
+            String time = _filename.substring(11,19);
+            Diary diary =  new Diary(date, time, 1, "hash",hash);
+            DiaryDataBaseManager diaryDataBaseManager = new DiaryDataBaseManager(getApplicationContext());
+            diaryDataBaseManager.insert(diary);
+//            Diary queryRes = diaryDataBaseManager.queryDiary(new Diary(date,time,0));
+//            System.out.println("******filename****:"+_filename);
+//            System.out.println("******filepath****:"+filePath);
+//            System.out.println("******hash****:"+hash);
+//            System.out.println("******queryHash****:"+queryRes.hashcode);
+
+
+            //=================拍照完毕后存储文件hash值======================
+
+
+
+
 //            outputStream.close();
 //            outputStream = new FileOutputStream(path);
 //            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);

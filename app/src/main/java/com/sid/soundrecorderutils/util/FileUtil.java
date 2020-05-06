@@ -6,7 +6,11 @@ import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,5 +81,16 @@ public class FileUtil {
             Toast.makeText(context, "删除单个文件失败：" + filePath + "不存在！", Toast.LENGTH_SHORT).show();
             return false;
         }
+    }
+
+    public static String getFileHash(String filepath){
+        String res = null;
+        try {
+           res =  DigestUtils.md5Hex(new FileInputStream(filepath));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  res;
+
     }
 }

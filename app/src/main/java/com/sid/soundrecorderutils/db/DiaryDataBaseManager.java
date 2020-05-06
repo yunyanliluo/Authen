@@ -56,7 +56,7 @@ public class DiaryDataBaseManager {
     public void insert(String date, String time, int isImage) {
         db.beginTransaction();	//开始事务
         try {
-            db.execSQL("INSERT INTO Diary VALUES(null, ?, ?, ?, null)", new Object[]{date, time, isImage});
+            db.execSQL("INSERT INTO Diary VALUES(null, ?, ?, ?, null,null)", new Object[]{date, time, isImage});
             db.setTransactionSuccessful();	//设置事务成功完成
             Log.d(TAG, "insert: " + date + "/" + time + "/" + isImage + ".");
             queryDiaryCursor(date, time);

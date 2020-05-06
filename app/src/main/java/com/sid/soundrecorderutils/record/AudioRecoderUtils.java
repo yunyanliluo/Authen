@@ -10,6 +10,7 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.sid.soundrecorderutils.db.Diary;
 import com.sid.soundrecorderutils.db.DiaryDataBaseManager;
 import com.sid.soundrecorderutils.util.DateUtil;
 import com.sid.soundrecorderutils.util.FileUtil;
@@ -50,10 +51,11 @@ public class AudioRecoderUtils {
     private String FolderPath = MP3_PATH;
     private MediaRecorder mMediaRecorder;
     public static final int MAX_LENGTH = 1000 * 60 * 10;// 最大录音时长1000*60*10;
-
+    private Context context;
     private OnAudioStatusUpdateListener audioStatusUpdateListener;
 
     public AudioRecoderUtils(Context context) {
+        this.context = context;
         File path = new File(FolderPath);
         if (!path.exists())
             path.mkdirs();
@@ -144,6 +146,7 @@ public class AudioRecoderUtils {
             }
             cos.flush();
             cos.close();
+            fos.close();
             fis.close();
 
             //加密结束
@@ -153,6 +156,22 @@ public class AudioRecoderUtils {
             if (file.exists() && file.isFile()) {
                 file.delete();
             }
+            //=================录音完毕后存储文件hash值======================
+            String _filename = fileName;
+            String hash = FileUtil.getFileHash(filePath);
+            String date = _filename.substring(0,10);
+            String time = _filename.substring(11,19);
+            Diary diary =  new Diary(date, time, 0, "",hash);
+            DiaryDataBaseManager diaryDataBaseManager = new DiaryDataBaseManager(context);
+            diaryDataBaseManager.insert(diary);
+
+//            Diary queryRes = diaryDataBaseManager.queryDiary(new Diary(date,time,0));
+//            System.out.println("******filename****:"+_filename);
+//            System.out.println("******filepath****:"+filePath);
+//            System.out.println("******hash****:"+hash);
+//            System.out.println("******queryHash****:"+queryRes.hashcode);
+
+            //=================录音完毕后存储文件hash值======================
             audioStatusUpdateListener.onStop(filePath);
 
 
