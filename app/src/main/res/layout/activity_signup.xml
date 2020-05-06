@@ -100,6 +100,7 @@
                     android:layout_marginLeft="10dp"
                     android:singleLine="true"
                     android:hint="请填写真刻密码"
+                    android:inputType="textPassword"
                     />
             </LinearLayout>
 
@@ -123,13 +124,13 @@
                     />
 
                 <com.sid.soundrecorderutils.util.EditTextUtil
+                    android:id="@+id/et_password2"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/et_password2"
                     android:layout_marginLeft="10dp"
-                    android:singleLine="true"
                     android:hint="请重复输入密码"
-                    />
+                    android:singleLine="true"
+                    android:inputType="textPassword"/>
             </LinearLayout>
         </LinearLayout>
 
