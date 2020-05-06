@@ -1,8 +1,12 @@
 package com.sid.soundrecorderutils.view;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +22,7 @@ import com.sid.soundrecorderutils.db.Diary;
 import com.sid.soundrecorderutils.db.DiaryDataBaseManager;
 import com.sid.soundrecorderutils.history.DiaryRecycleAdapter;
 import com.sid.soundrecorderutils.record.AudioRecoderUtils;
+import com.sid.soundrecorderutils.service.UploadService;
 import com.sid.soundrecorderutils.util.FileUtil;
 import com.sid.soundrecorderutils.util.LogUtils;
 
@@ -103,6 +108,18 @@ public class ReviewActivity extends BaseActivity {
             showAudio();
             adaptList(AudioList, isImageMode);
         }
+
+
+        //****************注册广播监听网络变化************
+        // 创建 IntentFilter 实例
+        intentFilter = new IntentFilter();
+        // 添加广播值
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        // 创建 NetworkChangeReceiver 实例
+        networkChangeReceiver = new BaseActivity.NetworkChangeReceiver();
+        // 注册广播
+        registerReceiver(networkChangeReceiver,intentFilter);
+        //****************注册广播监听网络变化************
     }
 
 
@@ -205,6 +222,12 @@ public class ReviewActivity extends BaseActivity {
         intent.putExtras(bundle);
         startActivity(intent);
     }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        unregisterReceiver(networkChangeReceiver);
+    }
 
 //    @Override
 //    public boolean onKeyUp(int keyCode, KeyEvent event) {
@@ -221,4 +244,33 @@ public class ReviewActivity extends BaseActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
+    //****************注册广播监听网络变化************
+    private IntentFilter intentFilter;
+    private BaseActivity.NetworkChangeReceiver networkChangeReceiver;
+    //****************注册广播监听网络变化************
+    class NetworkChangeReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // 获取管理网络连接的系统服务类的实例
+            ConnectivityManager connectivityManager = (ConnectivityManager)
+                    getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            // 判断网络是否可用
+            if (networkInfo != null && networkInfo.isAvailable()){
+                //网络可以用
+                Intent intentService = new Intent(context, UploadService.class);
+                startService(intentService);
+
+            }else {
+                //网络不可用
+                Intent intentService = new Intent(context,UploadService.class);
+                stopService(intentService);
+            }
+
+        }
+    }
+
+
+
 }

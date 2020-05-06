@@ -10,8 +10,11 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.widget.Toast;
@@ -26,6 +29,7 @@ import com.sid.soundrecorderutils.view.MainActivity;
 import com.sid.soundrecorderutils.view.RecordActivity;
 import com.sid.soundrecorderutils.view.ReviewActivity;
 import com.sid.soundrecorderutils.view.SelectActivity;
+import com.sid.soundrecorderutils.view.SignupActivity;
 import com.sid.soundrecorderutils.view.TakePhotoActivity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -37,7 +41,28 @@ import java.util.HashMap;
 public class UploadService extends Service {
     private String TAG = "SoundRecordService";
     private boolean canRun;
-    HashMap<String, Activity> map = new HashMap<String, Activity>();
+
+
+    Handler toastHandler = new Handler() {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            switch (msg.what) {
+                case -1:
+                    Toast.makeText(getApplicationContext(), msg.obj + "上传失败（文件未找到）", Toast.LENGTH_LONG).show();
+                    break;
+                case 0:
+                    Toast.makeText(getApplicationContext(), msg.obj + "上传失败，延时上传", Toast.LENGTH_LONG).show();
+
+                    break;
+                case 1:
+                    Toast.makeText(getApplicationContext(), msg.obj + "上传成功", Toast.LENGTH_LONG).show();
+
+                    break;
+            }
+
+
+        }
+    };
 
 
     @Override
@@ -77,26 +102,17 @@ public class UploadService extends Service {
 
 
                     final int responseCode = api.upload(filename, filepath);
-                    //************用于在顶层activity中响应toast,实际不应该new activity************
-                    ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-                    ActivityManager.RunningTaskInfo info = manager.getRunningTasks(1).get(0);
-                    String shortClassName = info.topActivity.getShortClassName();    //类名
-                    String className = info.topActivity.getClassName();              //完整类名
-                    String packageName = info.topActivity.getPackageName();          //包名
-                    map.get(className).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (responseCode == -1) {
-                                Toast.makeText(context, filename + "上传失败（文件未找到）", Toast.LENGTH_LONG).show();
-                            } else if (responseCode == 0) {
-                                Toast.makeText(context, filename + "上传失败，延时上传", Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(context, filename + "上传成功", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
-                    //************用于在顶层activity中响应toast,实际不应该new activity************
 
+                    Message message = new Message();
+                    message.obj = filename;
+                    if (responseCode == -1) {
+                        message.what = -1;
+                    } else if (responseCode == 0) {
+                        message.what = 0;
+                    } else {
+                        message.what = 1;
+                    }
+                    toastHandler.sendMessage(message);
                 }
                 System.out.println("启动服务-上传完毕");
                 stopSelf();
@@ -109,13 +125,7 @@ public class UploadService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        map.put("com.sid.soundrecorderutils.view.CallActivity", new CallActivity());
-        map.put("com.sid.soundrecorderutils.view.ReviewActivity", new ReviewActivity());
-        map.put("com.sid.soundrecorderutils.view.RecordActivity", new RecordActivity());
-        map.put("com.sid.soundrecorderutils.view.LoginActivity", new LoginActivity());
-        map.put("com.sid.soundrecorderutils.view.MainActivity", new MainActivity());
-        map.put("com.sid.soundrecorderutils.view.SelectActivity", new SelectActivity());
-        map.put("com.sid.soundrecorderutils.view.TakePhotoActivity", new TakePhotoActivity());
+
 
     }
 

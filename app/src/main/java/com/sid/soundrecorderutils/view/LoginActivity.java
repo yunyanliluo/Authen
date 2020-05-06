@@ -112,11 +112,11 @@ public class LoginActivity extends BaseActivity {
     protected void userLogin() {
         String input_username = mEtUsername.getText().toString();
         String input_password = mEtPassword.getText().toString();
-        if(input_username.equals("") || !checkUsernameAvailable(input_username)) {
+        if (input_username.equals("") || !checkUsernameAvailable(input_username)) {
             Toast.makeText(this, "请您输入合法的昵称", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(input_password.equals("") || !checkPasswordAvailable(input_password)) {
+        if (input_password.equals("") || !checkPasswordAvailable(input_password)) {
             Toast.makeText(this, "请您输入合法的密码", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -126,6 +126,7 @@ public class LoginActivity extends BaseActivity {
 
     /**
      * 检查username是否合法
+     *
      * @param input_username
      */
     private boolean checkUsernameAvailable(String input_username) {
@@ -134,6 +135,7 @@ public class LoginActivity extends BaseActivity {
 
     /**
      * 检查password是否合法
+     *
      * @param input_password
      */
     private boolean checkPasswordAvailable(String input_password) {
@@ -142,26 +144,42 @@ public class LoginActivity extends BaseActivity {
 
     /**
      * 登录/注册
+     *
      * @param input_username
      * @param input_password
      */
     private void login(final String input_username, final String input_password) {
-        final API api = new API(getApplicationContext());
 
-        final String[][] res = new String[1][];
-        final boolean[] notContinue = {true};
         new Thread(new Runnable() {
             @Override
             public void run() {
-                res[0] =  api.login(input_username,input_password);
-                notContinue[0] = false;
+                API api = new API(getApplicationContext());
+                String[] res = api.login(input_username, input_password);
+                if (res != null && res[0].equals("0")) {
+                    Message message = new Message();
+                    message.what = 0;
+                    loginHandler.sendMessage(message);
+                } else {
+                    Message message = new Message();
+                    message.what = -1;
+                    loginHandler.sendMessage(message);
+
+                }
             }
         }).start();
-        while (notContinue[0]){
-        }
-        if(res != null && res[0] != null && res[0][0].equals("0"))
-            startActivity(MainActivity.newIntent(LoginActivity.this));
-        else
-            Toast.makeText(this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
     }
+
+    Handler loginHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    startActivity(MainActivity.newIntent(LoginActivity.this));
+                    break;
+                case -1:
+                    Toast.makeText(getApplicationContext(), "用户名或密码错误", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+
+    };
 }

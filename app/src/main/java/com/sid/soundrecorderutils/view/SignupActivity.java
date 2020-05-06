@@ -1,6 +1,8 @@
 package com.sid.soundrecorderutils.view;
 
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -76,36 +78,72 @@ public class SignupActivity extends BaseActivity {
         return true;
     }
 
+    //    private void register(final String username, final String password) {
+//
+//        final API api = new API(getApplicationContext());
+//
+//        final String[][] res = new String[1][];
+//
+//        final boolean[] notContinue = {true};
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                res[0] = api.register(username, password);
+//
+//
+//                notContinue[0] = false;
+//
+//            }
+//        }).start();
+//
+//        while (notContinue[0]) {
+//            System.out.println("ovo");
+//        }
+//
+//        if (res != null && res[0] != null && res[0][0].equals("0")) {
+//            Toast.makeText(this, "注册成功", Toast.LENGTH_SHORT).show();
+//            Intent intent = new Intent(SignupActivity.this, MainActivity.class);
+//            startActivity(intent);
+//        } else {
+//            Toast.makeText(this, "注册失败，请重新注册", Toast.LENGTH_SHORT).show();
+//        }
+//
+//    }
     private void register(final String username, final String password) {
-        System.out.println("0000000000000000000000000000");
-        final API api = new API(getApplicationContext());
-        System.out.println("0000000000000000000000000001");
-        final String[][] res = new String[1][];
-        System.out.println("0000000000000000000000000002");
-        final boolean[] notContinue = {true};
-        System.out.println("0000000000000000000000000003");
         new Thread(new Runnable() {
             @Override
             public void run() {
-                res[0] = api.register(username, password);
-                System.out.println("res[0]");
-                System.out.println(notContinue[0]);
-                notContinue[0] = false;
-                System.out.println( notContinue[0]);
+                API api = new API(getApplicationContext());
+                String[] res = api.register(username, password);
+                if (res != null && res[0].equals("0")) {
+                    Message message = new Message();
+                    message.what = 0;
+                    registerHandler.sendMessage(message);
+                } else {
+                    Message message = new Message();
+                    message.what = -1;
+                    registerHandler.sendMessage(message);
+                }
             }
         }).start();
-        System.out.println("0000000000000000000000000004");
-        while (notContinue[0]) {
-            System.out.println("ovo");
-        }
-        System.out.println("0000000000000000000000000005");
-        if (res != null && res[0] != null && res[0][0].equals("0")) {
-            Toast.makeText(this, "注册成功", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-            startActivity(intent);
-        } else {
-            Toast.makeText(this, "注册失败，请重新注册", Toast.LENGTH_SHORT).show();
+    }
+
+    Handler registerHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(SignupActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    break;
+                case -1:
+                    Toast.makeText(getApplicationContext(), "注册失败，请重新注册", Toast.LENGTH_SHORT).show();
+                    break;
+            }
         }
 
-    }
+    };
+
+
 }
