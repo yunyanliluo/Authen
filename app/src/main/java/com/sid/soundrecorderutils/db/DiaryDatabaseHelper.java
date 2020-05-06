@@ -6,14 +6,15 @@ import android.content.Context;
 
 public class DiaryDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "diary.db";
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
 
     public static final String CREATE_DIARY = "create table Diary("
             + "_id integer primary key autoincrement, "
             + "date text, "
             + "time text, "
             + "isImage integer, "
-            + "discription text)";
+            + "discription text, "
+            + "hashcode text)";
 
     private Context mContext;
 

@@ -43,7 +43,7 @@ public class DiaryDataBaseManager {
     public void insert(Diary diary) {
         db.beginTransaction();	//开始事务
         try {
-            db.execSQL("INSERT INTO Diary VALUES(null, ?, ?, ?, ?)", new Object[]{diary.date, diary.time, diary.isImage, diary.discription});
+            db.execSQL("INSERT INTO Diary VALUES(null, ?, ?, ?, ?, ?)", new Object[]{diary.date, diary.time, diary.isImage, diary.discription, diary.hashcode});
             db.setTransactionSuccessful();	//设置事务成功完成
         } finally {
             db.endTransaction();	//结束事务
@@ -83,6 +83,7 @@ public class DiaryDataBaseManager {
         }
         ContentValues cv = new ContentValues();
         cv.put("discription", updatedDiary.discription);
+        cv.put("hashcode", updatedDiary.hashcode);
         Log.d(TAG, "update " + " to " + updatedDiary.toString());
         db.update("Diary", cv, "_id = ?", new String[]{String.valueOf(diary_id)});
 //        db.update("Diary", cv, "title = ?", new String[]{startUpdateDiary.title});
@@ -142,9 +143,10 @@ public class DiaryDataBaseManager {
             diary.time = c.getString(c.getColumnIndex("time"));
             diary.isImage = c.getInt(c.getColumnIndex("isImage"));
             diary.discription = c.getString(c.getColumnIndex("discription"));
+            diary.hashcode = c.getString(c.getColumnIndex("hashcode"));
         }
         c.close();
-        Log.d(TAG, "queryDiary: returns: " + diary.date + " " + diary.time + " " + diary.isImage + " " + diary.discription);
+        Log.d(TAG, "queryDiary: returns: " + diary.date + " " + diary.time + " " + diary.isImage + " " + diary.discription + " " + diary.hashcode);
         return diary;
     }
 
@@ -186,7 +188,7 @@ public class DiaryDataBaseManager {
      * @return	Cursor
      */
     public Cursor queryDiaryCursor(String diaryDate, String diaryTime) {
-        Cursor c = db.query("Diary",new String[] { "_id","date","time","isImage", "discription" },"date = ? AND time = ?", new String[]{diaryDate, diaryTime},null,null,null, null);
+        Cursor c = db.query("Diary",new String[] { "_id","date","time","isImage", "discription", "hashcode" },"date = ? AND time = ?", new String[]{diaryDate, diaryTime},null,null,null, null);
         Log.d(TAG, "queryDiaryCursor: " + diaryDate + "/" + diaryTime + ".");
         Log.d(TAG, "queryDiaryCursor: position: " + c.getPosition());
         Log.d(TAG, "queryDiaryCursor: count:" + c.getCount());
@@ -198,7 +200,7 @@ public class DiaryDataBaseManager {
      * @return	Cursor
      */
     public Cursor queryDiaryCursor(Diary diary) {
-        Cursor c = db.query("Diary",new String[] { "_id","date","time","isImage", "discription" },"date = ? AND time = ?", new String[]{diary.date,diary.time},null,null,null, null);
+        Cursor c = db.query("Diary",new String[] { "_id","date","time","isImage", "discription", "hashcode"  },"date = ? AND time = ?", new String[]{diary.date,diary.time},null,null,null, null);
         Log.d(TAG, "queryDiaryCursor: " + diary.date + "/" + diary.time + ".");
         Log.d(TAG, "queryDiaryCursor: position: " + c.getPosition());
         Log.d(TAG, "queryDiaryCursor: count:" + c.getCount());

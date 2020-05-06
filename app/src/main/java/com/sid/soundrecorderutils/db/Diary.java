@@ -13,9 +13,18 @@ public class Diary implements Serializable {
 //    public String dateSignup; //date of register
 //    public String dateLastLogin; //last date of login
     public String discription;
+    public String hashcode;
 //    public String uploadID;
 
     public Diary() {
+    }
+
+    public Diary(String date, String time, int isImage, String discription, String hashcode) {
+        this.date = date;
+        this.time = time;
+        this.isImage = isImage;
+        this.discription = discription;
+        this.hashcode = hashcode;
     }
 
     public Diary(String date, String time, int isImage, String discription) {
@@ -37,6 +46,7 @@ public class Diary implements Serializable {
         time = diary.time;
         isImage = diary.isImage;
         discription = diary.discription;
+        hashcode = diary.hashcode;
     }
 
     public String toString() {
@@ -53,6 +63,7 @@ public class Diary implements Serializable {
             stringDiary += ".mp3 ";
         }
         stringDiary += this.discription;
+        stringDiary += this.hashcode;
         return stringDiary;
     }
 }
