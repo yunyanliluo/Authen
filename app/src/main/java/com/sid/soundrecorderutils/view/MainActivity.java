@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     private String TAG = "MainActivity";
-    private Button mBtnRecord, mBtnTakePhoto, mBtnUpload;
+    private Button mBtnRecord, mBtnTakePhoto, mBtnTakeVideo, mBtnUpload;
     private ImageView mBtnSetting, mBtnLock, mBtnPosition, mBtnCall;
     private String imgPath = "";            //图片文件路径
     private String imgName = "";            //图片文件名
@@ -62,6 +62,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mBtnTakePhoto = (Button) findViewById(R.id.btn_take_photo);
         mBtnTakePhoto.setOnClickListener(this);
 
+        mBtnTakeVideo = (Button) findViewById(R.id.btn_take_video);
+        mBtnTakeVideo.setOnClickListener(this);
+
         mBtnUpload = (Button) findViewById(R.id.btn_upload);
         mBtnUpload.setOnClickListener(this);
 
@@ -87,6 +90,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         Drawable drawable_btn_photo=getResources().getDrawable(R.drawable.xiangji);
         drawable_btn_photo.setBounds(0,0,200,200);//第一0是距左边距离，第二0是距上边距离，30、35分别是长宽
         mBtnTakePhoto.setCompoundDrawables(drawable_btn_photo,null,null,null);//只放左边
+        Drawable drawable_btn_video=getResources().getDrawable(R.drawable.luxiang);
+        drawable_btn_video.setBounds(-30,0,230,200);//第一0是距左边距离，第二0是距上边距离，30、35分别是长宽
+        mBtnTakeVideo.setCompoundDrawables(drawable_btn_video,null,null,null);//只放左边
         Drawable drawable_btn_upload=getResources().getDrawable(R.drawable.xiazai);
         drawable_btn_upload.setBounds(0,0,200,200);//第一0是距左边距离，第二0是距上边距离，30、35分别是长宽
         mBtnUpload.setCompoundDrawables(drawable_btn_upload,null,null,null);//只放左边
@@ -111,6 +117,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
             case R.id.btn_take_photo:
                 startTake();
+                break;
+
+            case R.id.btn_take_video:
+                startTakeVideo();
                 break;
 
             case R.id.btn_upload:
@@ -149,6 +159,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
      */
     public void startTake() {
         startActivityForResult(new Intent(MainActivity.this, TakePhotoActivity.class), 222);
+    }
+
+    /**
+     * 进入视频功能，并处理返回结果
+     */
+    public void startTakeVideo(){
+        startActivity(new Intent(MainActivity.this, TakeVideoActivity.class));
     }
 
     /**
