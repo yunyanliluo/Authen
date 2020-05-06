@@ -99,6 +99,7 @@
                     android:layout_marginLeft="10dp"
                     android:singleLine="true"
                     android:hint="请填写真刻密码"
+                    android:inputType="textPassword"
                     />
             </LinearLayout>
         </LinearLayout>

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sid.soundrecorderutils.R;
+import com.sid.soundrecorderutils.api.API;
 import com.sid.soundrecorderutils.util.EditTextUtil;
 
 public class LoginActivity extends BaseActivity {
@@ -111,14 +112,15 @@ public class LoginActivity extends BaseActivity {
     protected void userLogin() {
         String input_username = mEtUsername.getText().toString();
         String input_password = mEtPassword.getText().toString();
-        if(input_username == "" || !checkUsernameAvailable(input_username)) {
+        if(input_username.equals("") || !checkUsernameAvailable(input_username)) {
             Toast.makeText(this, "请您输入合法的昵称", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(input_password == "" || !checkPasswordAvailable(input_password)) {
+        if(input_password.equals("") || !checkPasswordAvailable(input_password)) {
             Toast.makeText(this, "请您输入合法的密码", Toast.LENGTH_SHORT).show();
             return;
         }
+
         login(input_username, input_password);
     }
 
@@ -143,7 +145,23 @@ public class LoginActivity extends BaseActivity {
      * @param input_username
      * @param input_password
      */
-    private void login(String input_username, String input_password) {
-        startActivity(MainActivity.newIntent(LoginActivity.this));
+    private void login(final String input_username, final String input_password) {
+        final API api = new API(getApplicationContext());
+
+        final String[][] res = new String[1][];
+        final boolean[] notContinue = {true};
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                res[0] =  api.login(input_username,input_password);
+                notContinue[0] = false;
+            }
+        }).start();
+        while (notContinue[0]){
+        }
+        if(res != null && res[0] != null && res[0][0].equals("0"))
+            startActivity(MainActivity.newIntent(LoginActivity.this));
+        else
+            Toast.makeText(this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
     }
 }
