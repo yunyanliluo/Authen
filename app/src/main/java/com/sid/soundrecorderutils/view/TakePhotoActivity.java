@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Environment;
@@ -47,6 +48,8 @@ public class TakePhotoActivity extends BaseActivity {
     private ShootButton mBtnShoot;
     public static final String AES_KEY = "PKUAuthenKey1024";
 
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,8 +62,8 @@ public class TakePhotoActivity extends BaseActivity {
         relativeLayout.removeAllViews();
         cv = new CameraView(TakePhotoActivity.this);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.FILL_PARENT,
-                LinearLayout.LayoutParams.FILL_PARENT);
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
         relativeLayout.addView(cv, params);
 
         //拍摄按钮
@@ -68,7 +71,7 @@ public class TakePhotoActivity extends BaseActivity {
         mBtnShoot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                takePicture();
+                    takePicture();
             }
         });
     }
@@ -116,7 +119,15 @@ public class TakePhotoActivity extends BaseActivity {
                     }
                     camera.setParameters(parameters);
                     camera.setParameters(parameters);//把上面的设置 赋给摄像头
+
+                    SurfaceTexture st = new SurfaceTexture(MODE_PRIVATE);
+                    try {
+                        camera.setPreviewTexture(st);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     camera.startPreview();
+
                     camera.autoFocus(new Camera.AutoFocusCallback() {
                         @Override
                         public void onAutoFocus(boolean success, Camera camera) {
@@ -126,6 +137,7 @@ public class TakePhotoActivity extends BaseActivity {
                             }
                         }
                     });
+
                 }
 
                 @Override
@@ -160,6 +172,7 @@ public class TakePhotoActivity extends BaseActivity {
     private void takePicture() {
         if (camera != null) {
             camera.takePicture(null, null, picture);
+
         } else {
             Log.e("TAG", "camera=null");
         }
@@ -182,6 +195,7 @@ public class TakePhotoActivity extends BaseActivity {
             Log.e("TAG", "" + dList.size());
 
             saveFile(data, dList.get(dList.size()-1));
+
         }
     };
 

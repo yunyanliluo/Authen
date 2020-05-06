@@ -1,10 +1,14 @@
 package com.sid.soundrecorderutils.view;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sid.soundrecorderutils.R;
+import com.sid.soundrecorderutils.service.UploadService;
 
 import static android.content.ContentValues.TAG;
 
@@ -36,6 +41,19 @@ public class CallActivity extends BaseActivity implements View.OnClickListener {
         context = this;
         if(name_cont1 == null) name_cont1 = "常用联系人";
         initView();
+
+        //****************注册广播监听网络变化************
+        // 创建 IntentFilter 实例
+        intentFilter = new IntentFilter();
+        // 添加广播值
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        // 创建 NetworkChangeReceiver 实例
+        networkChangeReceiver = new BaseActivity.NetworkChangeReceiver();
+        // 注册广播
+        registerReceiver(networkChangeReceiver,intentFilter);
+        //****************注册广播监听网络变化************
+
+
     }
 
     /**
@@ -193,4 +211,41 @@ public class CallActivity extends BaseActivity implements View.OnClickListener {
         intent.setData(data);
         startActivity(intent);
     }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        unregisterReceiver(networkChangeReceiver);
+    }
+
+
+    //****************注册广播监听网络变化************
+    private IntentFilter intentFilter;
+    private BaseActivity.NetworkChangeReceiver networkChangeReceiver;
+    //****************注册广播监听网络变化************
+    class NetworkChangeReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // 获取管理网络连接的系统服务类的实例
+            ConnectivityManager connectivityManager = (ConnectivityManager)
+                    getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            // 判断网络是否可用
+            if (networkInfo != null && networkInfo.isAvailable()){
+                //网络可以用
+                Intent intentService = new Intent(context, UploadService.class);
+                startService(intentService);
+
+            }else {
+                //网络不可用
+                Intent intentService = new Intent(context,UploadService.class);
+                stopService(intentService);
+            }
+
+        }
+    }
+
+
+
 }

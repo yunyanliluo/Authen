@@ -59,16 +59,16 @@ public class BaseActivity extends Activity {
 
 
 
-        //****************注册广播监听网络变化************
-        // 创建 IntentFilter 实例
-        intentFilter = new IntentFilter();
-        // 添加广播值
-        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        // 创建 NetworkChangeReceiver 实例
-        networkChangeReceiver = new NetworkChangeReceiver();
-        // 注册广播
-        registerReceiver(networkChangeReceiver,intentFilter);
-        //****************注册广播监听网络变化************
+//        //****************注册广播监听网络变化************
+//        // 创建 IntentFilter 实例
+//        intentFilter = new IntentFilter();
+//        // 添加广播值
+//        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+//        // 创建 NetworkChangeReceiver 实例
+//        networkChangeReceiver = new NetworkChangeReceiver();
+//        // 注册广播
+//        registerReceiver(networkChangeReceiver,intentFilter);
+//        //****************注册广播监听网络变化************
 
 
 
@@ -83,7 +83,7 @@ public class BaseActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(exitReceiver);
-        unregisterReceiver(networkChangeReceiver);
+//        unregisterReceiver(networkChangeReceiver);
     }
 
     class ExitReceiver extends BroadcastReceiver {
