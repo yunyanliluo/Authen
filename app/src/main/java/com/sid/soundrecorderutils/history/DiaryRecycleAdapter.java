@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sid.soundrecorderutils.R;
+import com.sid.soundrecorderutils.api.API;
 import com.sid.soundrecorderutils.db.Diary;
 import com.sid.soundrecorderutils.db.DiaryDataBaseManager;
 import com.sid.soundrecorderutils.ftp.FtpClient;
@@ -471,14 +472,28 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
                 FtpClient ftpClient = new FtpClient();
                 Log.e("TAG", "filePath:" + filePath);
                 Log.e("TAG", "fileName:" + fileName);
-                final String str = ftpClient.ftpUpload(filePath, fileName);
+                API api = new API(context);
+//                String [] res1 = api.register("abcd","123456");
+//                if(res1 != null)
+//                System.out.println("register:"+res1[0]);
+//                String[] res2 = api.login("abcd","123456");
+//                if(res2 != null)
+//                System.out.println("login:"+res2[0]);
+//                String[] res3 = api.hash(fileName,"123","123");
+//                if(res3 != null)
+//                System.out.println("hash:"+res3[0]);
+
+                final int responseCode = api.upload(fileName,filePath);
+//                final String str = ftpClient.ftpUpload(filePath, fileName);
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (str.equals("1")) {
-                            Toast.makeText(context, "上传成功", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
+                        if (responseCode == -1) {
+                            Toast.makeText(context, fileName+"上传失败（文件未找到）", Toast.LENGTH_LONG).show();
+                        } else if(responseCode == 0){
+                            Toast.makeText(context, fileName+"上传失败，延时上传", Toast.LENGTH_LONG).show();
+                        }else {
+                            Toast.makeText(context, fileName+"上传成功", Toast.LENGTH_LONG).show();
                         }
                     }
                 });

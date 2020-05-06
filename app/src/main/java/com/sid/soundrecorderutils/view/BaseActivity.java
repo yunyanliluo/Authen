@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sid.soundrecorderutils.R;
+import com.sid.soundrecorderutils.service.UploadService;
 
 public class BaseActivity extends Activity {
     //通过在BaseActivity中注册一个广播，当退出时发送一个广播，finish退出
@@ -30,6 +33,11 @@ public class BaseActivity extends Activity {
             Manifest.permission.LOCATION_HARDWARE,
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.WAKE_LOCK};
+
+
+
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +56,22 @@ public class BaseActivity extends Activity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(EXITACTION);
         registerReceiver(exitReceiver, filter);
+
+
+
+        //****************注册广播监听网络变化************
+        // 创建 IntentFilter 实例
+        intentFilter = new IntentFilter();
+        // 添加广播值
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        // 创建 NetworkChangeReceiver 实例
+        networkChangeReceiver = new NetworkChangeReceiver();
+        // 注册广播
+        registerReceiver(networkChangeReceiver,intentFilter);
+        //****************注册广播监听网络变化************
+
+
+
     }
 
     public void showToast(String value) {
@@ -59,6 +83,7 @@ public class BaseActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(exitReceiver);
+        unregisterReceiver(networkChangeReceiver);
     }
 
     class ExitReceiver extends BroadcastReceiver {
@@ -69,4 +94,35 @@ public class BaseActivity extends Activity {
         }
 
     }
+
+    //****************注册广播监听网络变化************
+    private IntentFilter intentFilter;
+    private NetworkChangeReceiver networkChangeReceiver;
+    //****************注册广播监听网络变化************
+    class NetworkChangeReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // 获取管理网络连接的系统服务类的实例
+            ConnectivityManager connectivityManager = (ConnectivityManager)
+                    getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            // 判断网络是否可用
+            if (networkInfo != null && networkInfo.isAvailable()){
+                //网络可以用
+                Intent intentService = new Intent(context, UploadService.class);
+                startService(intentService);
+
+            }else {
+                //网络不可用
+                Intent intentService = new Intent(context,UploadService.class);
+                stopService(intentService);
+            }
+
+        }
+    }
+
+
+
+
 }
