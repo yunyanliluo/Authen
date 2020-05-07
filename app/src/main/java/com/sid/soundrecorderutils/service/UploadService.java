@@ -17,10 +17,14 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.sid.soundrecorderutils.api.API;
+import com.sid.soundrecorderutils.db.Diary;
+import com.sid.soundrecorderutils.db.DiaryDataBaseManager;
 import com.sid.soundrecorderutils.tcp.SocketMsg;
+import com.sid.soundrecorderutils.util.FileUtil;
 import com.sid.soundrecorderutils.util.LogUtils;
 import com.sid.soundrecorderutils.util.StringUtil;
 import com.sid.soundrecorderutils.view.CallActivity;
@@ -56,7 +60,12 @@ public class UploadService extends Service {
                     break;
                 case 1:
                     Toast.makeText(getApplicationContext(), msg.obj + "上传成功", Toast.LENGTH_LONG).show();
-
+                    break;
+                case -2:
+                    Toast.makeText(getApplicationContext(), msg.obj + "上传失败,文件被篡改", Toast.LENGTH_LONG).show();
+                    break;
+                case -3:
+                    Toast.makeText(getApplicationContext(), msg.obj + "上传失败(hash上传失败)，请稍后再试", Toast.LENGTH_LONG).show();
                     break;
             }
 
@@ -100,11 +109,36 @@ public class UploadService extends Service {
                     System.out.println("filename: " + filename);
                     System.out.println("filepath: " + filepath);
 
-
-                    final int responseCode = api.upload(filename, filepath);
-
                     Message message = new Message();
                     message.obj = filename;
+
+                    //=====================上传之前校验hash值=========================
+                    DiaryDataBaseManager diaryDataBaseManager = new DiaryDataBaseManager(context);
+                    Diary startQueryDiary = new Diary(filename.substring(0, 10), filename.substring(11, 19), 0);
+                    Diary queryResult = diaryDataBaseManager.queryDiary(startQueryDiary);
+                    String ordinalHash = queryResult.hashcode;
+                    String currentHash = FileUtil.getFileHash(filepath);
+                    if (!ordinalHash.equals(currentHash)) {
+                        //hash不同，文件被篡改
+                        message.what = -2;
+                        toastHandler.sendMessage(message);
+                        continue;
+                    }
+                    //=====================上传之前校验hash值=========================
+                    //=====================上传文件之前先上传hash=====================
+                    String[] res0 = api.hash(filename,currentHash,String.valueOf(System.currentTimeMillis()));
+                    if(res0 == null){
+                        Log.e("UPLOAD","上传hash失败");
+                    }else if (res0[0].equals("-1")){
+                        //返回值-1，上传失败
+                        message.what = -3;
+                        toastHandler.sendMessage(message);
+                        continue;
+                    }
+                    //=====================上传文件之前先上传hash=====================
+
+
+                    final int responseCode = api.upload(filename, filepath);
                     if (responseCode == -1) {
                         message.what = -1;
                     } else if (responseCode == 0) {
