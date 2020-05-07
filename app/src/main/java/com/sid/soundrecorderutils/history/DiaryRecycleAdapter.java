@@ -500,7 +500,9 @@ public class DiaryRecycleAdapter extends RecyclerView.Adapter<DiaryRecycleAdapte
                 //=====================上传之前校验hash值=========================
                 //=====================上传文件之前先上传hash=====================
                 String[] res = api.hash(fileName,currentHash,String.valueOf(System.currentTimeMillis()));
-                if(res[0].equals("-1")){
+                if(res == null){
+                    Log.e("UPLOAD","上传hash失败");
+                }else if (res[0].equals("-1")){
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
